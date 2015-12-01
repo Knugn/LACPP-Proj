@@ -41,7 +41,8 @@ public class Entities implements IWEntities {
 	}
 	
 	public void allocMany(int n, long[] dst, int offset) {
-		dst[offset++] = alloc();
+		for (int i=0; i<n; i++)
+			dst[offset++] = alloc();
 	}
 	
 	private int getFreeIndex() {

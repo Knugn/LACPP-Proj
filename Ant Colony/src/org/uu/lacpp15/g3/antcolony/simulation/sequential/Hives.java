@@ -1,7 +1,6 @@
 package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 
 import org.uu.lacpp15.g3.antcolony.simulation.entities.AEntityIterator;
-import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
 
 public class Hives implements IRHives {
@@ -22,9 +21,8 @@ public class Hives implements IRHives {
 	}
 
 	@Override
-	public IREntityIterator iterator() {
-		// TODO Auto-generated method stub
-		return null;
+	public HivesIterator iterator() {
+		return this.new HivesIterator();
 	}
 	
 	public class HivesIterator extends AEntityIterator {

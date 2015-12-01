@@ -10,4 +10,8 @@ public interface ISimulation {
 	 * @param nanoSecDelta the number of nanoseconds to progress by.
 	 */
 	public void update(long nanoSecDelta);
+	/**
+	 * @return the simulation world.
+	 */
+	public IWorld getWorld();
 }

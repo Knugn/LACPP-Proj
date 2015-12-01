@@ -2,14 +2,21 @@ package org.uu.lacpp15.g3.antcolony.client;
 
 import org.uu.lacpp15.g3.antcolony.client.FpsLoop.FpsListener;
 import org.uu.lacpp15.g3.antcolony.client.FpsLoop.FrameUpdater;
+import org.uu.lacpp15.g3.antcolony.client.gui.GUI;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 
 public class Client implements Runnable, FrameUpdater, FpsListener {
 
-	FpsLoop loop;
-	ISimulation simulation;
+	private FpsLoop loop;
+	private ISimulation simulation;
+	private GUI gui;
+	
+	public Client() {
+		this(new org.uu.lacpp15.g3.antcolony.simulation.sequential.Simulation());
+	}
 	
 	public Client(ISimulation simulation) {
+		gui = new GUI();
 		setSimulation(simulation);
 	}
 	
@@ -37,7 +44,7 @@ public class Client implements Runnable, FrameUpdater, FpsListener {
 	@Override
 	public void update(long nanoSecDelta) {
 		simulation.update(nanoSecDelta);
-		//TODO: render
+		gui.render(simulation);
 	}
 	
 }
