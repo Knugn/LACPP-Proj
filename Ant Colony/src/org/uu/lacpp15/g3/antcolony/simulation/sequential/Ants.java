@@ -5,14 +5,23 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 
 public class Ants implements IRAnts {
 	
+	private float maxSpeed;
+	
 	private Entities	entities;
 	private long[]		ids;
 	private int[]		foodCarried;
 	
-	public Ants(Entities entities, int nAnts) {
+	public Ants(float maxSpeed, Entities entities, int nAnts) {
+		if (maxSpeed < 0)
+			throw new IllegalArgumentException("maxSpeed must be non-negative.");
+		this.maxSpeed = maxSpeed;
 		this.entities = entities;
 		this.ids = entities.allocMany(nAnts, null);
 		this.foodCarried = new int[ids.length];
+	}
+	
+	public float getMaxSpeed() {
+		return maxSpeed;
 	}
 	
 	@Override
