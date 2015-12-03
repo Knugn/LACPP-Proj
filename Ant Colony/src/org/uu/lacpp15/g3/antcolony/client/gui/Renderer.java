@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
 
@@ -19,14 +20,21 @@ public class Renderer {
 		g.setColor(Color.black);
 		IREntityIterator antsIter = simulation.getWorld().getAllAnts().iterator();
 		final int r = 5;
+		IRAABoxInt2 bounds = simulation.getWorld().getBounds();
+		final int xmin = bounds.getMinX();
+		final int xmax = bounds.getMaxX();
+		final int ymin = bounds.getMinY();
+		final int ymax = bounds.getMaxY();
 		while (antsIter.next()) {
-			int x = toImageCoord(antsIter.getx(),w)-r;
-			int y = toImageCoord(antsIter.gety(),h)-r;
-			for (int i=-1; i<=1; i++)
-				for (int j=-1; j<=1; j++)
-					g.fillOval(x+i*w, y+j*h, r*2, r*2);
+			int x = toImageCoord(antsIter.getx(),xmin,xmax,w-2*r);
+			int y = toImageCoord(antsIter.gety(),ymin,ymax,h-2*r);
+			g.fillOval(x, y, r*2, r*2);
 		}
 		g.dispose();
+	}
+	
+	private static int toImageCoord(int a, int amin, int amax, int imgSize) {
+		return (int)Math.round((a-amin+0.5f)/(amax-amin)*imgSize);
 	}
 	
 	private static int toImageCoord(int x, int w) {

@@ -1,5 +1,6 @@
 package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 
+import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
 
@@ -10,8 +11,10 @@ public class Simulation implements ISimulation {
 	private AntsAI ai;
 	
 	public Simulation() {
-		world = new World(100, 50, 1);
-		ai = new AntsAI();
+		final int min = Integer.MIN_VALUE /4;
+		final int max = -min;
+		world = new World(new AABoxInt2(min,max,min,max), 100, 50, 1);
+		ai = new AntsAI(world.getAllAnts());
 	}
 	
 	@Override
@@ -21,7 +24,8 @@ public class Simulation implements ISimulation {
 	
 	@Override
 	public void update(long nanoSecDelta) {
-		ai.update(world.getAllAnts(), nanoSecDelta);
+		ai.update(nanoSecDelta);
+		world.update(nanoSecDelta);
 		nanoSecCounter += nanoSecDelta;
 	}
 
