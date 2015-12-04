@@ -10,6 +10,7 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IWEntities;
 public class Entities implements IWEntities {
 	
 	private int[][]					XY	= new int[2][];
+	private float[]					R;
 	private int						nextIdx;
 	private long					nextId;
 	private TreeMap<Long, Integer>	idToIdxMap;
@@ -17,19 +18,23 @@ public class Entities implements IWEntities {
 	public Entities(int maxEntities) {
 		for (int i = 0; i < XY.length; i++)
 			XY[i] = new int[maxEntities];
+		R = new float[maxEntities];
 		idToIdxMap = new TreeMap<>();
 	}
 	
 	public long alloc() {
-		return alloc(0, 0);
+		return alloc(0, 0, 0);
 	}
 	
-	public long alloc(int x, int y) {
+	public long alloc(int x, int y, float r) {
 		if (size() >= XY[0].length)
 			throw new RuntimeException("Max entities already allocated.");
 		long id = nextId++;
 		int idx = getFreeIndex();
 		idToIdxMap.put(id, idx);
+		XY[0][idx] = x;
+		XY[1][idx] = y;
+		R[idx] = r;
 		return id;
 	}
 	
@@ -41,7 +46,7 @@ public class Entities implements IWEntities {
 	}
 	
 	public void allocMany(int n, long[] dst, int offset) {
-		for (int i=0; i<n; i++)
+		for (int i = 0; i < n; i++)
 			dst[offset++] = alloc();
 	}
 	
@@ -102,6 +107,18 @@ public class Entities implements IWEntities {
 		XY[1][idx] = y;
 	}
 	
+	public float getRadius(long id) {
+		int idx = getIndex(id);
+		return R[idx];
+	}
+	
+	public void setRadius(long id, float radius) {
+		if (radius < 0)
+			throw new IllegalArgumentException("radius must be non-negative.");
+		int idx = getIndex(id);
+		R[idx] = radius;
+	}
+	
 	private int getIndex(long id) {
 		if (!idToIdxMap.containsKey(id))
 			throw new IllegalArgumentException("No entity allocated for id " + id + ".");
@@ -135,6 +152,11 @@ public class Entities implements IWEntities {
 			}
 			return false;
 		}
+
+		@Override
+		public long getId() {
+			return cur.getKey();
+		}
 		
 		@Override
 		public int getCoord(int n) {
@@ -142,13 +164,13 @@ public class Entities implements IWEntities {
 		}
 		
 		@Override
-		public long getId() {
-			return cur.getKey();
-		}
-		
-		@Override
 		public void setCoord(int n, int value) {
 			XY[n][cur.getValue()] = value;
+		}
+
+		@Override
+		public float getRadius() {
+			return R[cur.getValue()];
 		}
 		
 	}

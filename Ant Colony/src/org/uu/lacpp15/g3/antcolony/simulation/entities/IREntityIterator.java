@@ -41,5 +41,8 @@ public interface IREntityIterator {
 	 * @return the n-th coordinate of the current element.
 	 */
 	public int getCoord(int n);
-	
+	/**
+	 * @return the radisu of the current element.
+	 */
+	public float getRadius();
 }
