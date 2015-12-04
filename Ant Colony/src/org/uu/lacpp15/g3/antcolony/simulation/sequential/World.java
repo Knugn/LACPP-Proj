@@ -3,6 +3,7 @@ package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 import org.uu.lacpp15.g3.antcolony.common.Collision;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
+import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.Ants.AntsIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.Hives.HivesIterator;

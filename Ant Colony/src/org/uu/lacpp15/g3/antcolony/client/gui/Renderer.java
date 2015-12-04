@@ -9,9 +9,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
+import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.IRPheromoneGrid;
 
 public class Renderer {
 	

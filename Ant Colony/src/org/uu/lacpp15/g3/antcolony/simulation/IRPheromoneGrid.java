@@ -1,4 +1,4 @@
-package org.uu.lacpp15.g3.antcolony.simulation.sequential;
+package org.uu.lacpp15.g3.antcolony.simulation;
 
 /**
  * Readable pheromone gird interface.
