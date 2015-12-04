@@ -39,6 +39,13 @@ public class FloatGrid {
 		}
 	}
 	
+	public void clampFromAbove(float max) {
+		for (int i = 0; i < grid.length; i++) {
+			if (grid[i] > max)
+			grid[i] = max;
+		} 
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

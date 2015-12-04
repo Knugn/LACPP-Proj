@@ -2,7 +2,8 @@ package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 
 public class GaussianBlur {
 	
-	private float[] taps = {0.02275f,0.9545f,0.02275f};
+	//private float[] taps = {0.02275f,0.9545f,0.02275f};
+	private float[] taps = {0.000045f,0.9999f,0.000045f};
 	
 	public void blur(FloatGrid src, FloatGrid dst) {
 		blur(src,dst,1,1);

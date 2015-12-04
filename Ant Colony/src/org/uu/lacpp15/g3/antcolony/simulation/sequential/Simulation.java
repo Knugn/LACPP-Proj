@@ -13,7 +13,7 @@ public class Simulation implements ISimulation {
 	public Simulation() {
 		final int min = Integer.MIN_VALUE /4;
 		final int max = -min;
-		world = new World(new AABoxInt2(min,max,min,max), 100, 50, 1);
+		world = new World(new AABoxInt2(min,max,min,max), 1000, 500, 1);
 		ai = new AntsAI(world.getAllAnts());
 	}
 	

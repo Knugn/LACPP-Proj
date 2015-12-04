@@ -5,19 +5,27 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 
 public class Ants implements IRAnts {
 	
-	private float maxSpeed;
+	private final float maxSpeed;
+	private final float radius;
 	
 	private Entities	entities;
 	private long[]		ids;
 	private int[]		foodCarried;
+	private long[]		nanosSinceHive;
 	
-	public Ants(float maxSpeed, Entities entities, int nAnts) {
+	public Ants(float maxSpeed, float radius, Entities entities, int nAnts) {
 		if (maxSpeed < 0)
 			throw new IllegalArgumentException("maxSpeed must be non-negative.");
+		if (radius < 0)
+			throw new IllegalArgumentException("raidus must be non-negative.");
 		this.maxSpeed = maxSpeed;
+		this.radius = radius;
 		this.entities = entities;
 		this.ids = entities.allocMany(nAnts, null);
+		for (long id: ids)
+			entities.setRadius(id, radius);
 		this.foodCarried = new int[ids.length];
+		this.nanosSinceHive = new long[ids.length];
 	}
 	
 	public float getMaxSpeed() {
@@ -42,7 +50,12 @@ public class Ants implements IRAnts {
 		public boolean next() {
 			return ++idIdx < ids.length;
 		}
-		
+
+		@Override
+		public long getId() {
+			return ids[idIdx];
+		}
+
 		@Override
 		public int getCoord(int n) {
 			return entities.getCoord(ids[idIdx], n);
@@ -64,10 +77,18 @@ public class Ants implements IRAnts {
 		}
 		
 		@Override
-		public long getId() {
-			return ids[idIdx];
+		public float getRadius() {
+			// All ants have same radius
+			return radius;
 		}
 		
+		public long getNanosSinceHive() {
+			return nanosSinceHive[idIdx];
+		}
+		
+		public void setNanosSinceHive(long nanos) {
+			nanosSinceHive[idIdx] = nanos;
+		}
 	}
 	
 }

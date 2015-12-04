@@ -5,13 +5,19 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
 
 public class Hives implements IRHives {
 	
+	private final float radius;
 	private Entities entities;
 	private long[] ids;
 	private int[] foodStored;
 	
-	public Hives(Entities entities, int nHives) {
+	public Hives(float radius, Entities entities, int nHives) {
+		if (radius < 0)
+			throw new IllegalArgumentException("radius must be non-negative.");
+		this.radius = radius;
 		this.entities = entities;
 		this.ids = entities.allocMany(nHives, null);
+		for (long id : ids)
+			entities.setRadius(id, radius);
 		this.foodStored = new int[ids.length];
 	}
 
@@ -57,6 +63,11 @@ public class Hives implements IRHives {
 			if (value < 0)
 				throw new IllegalArgumentException();
 			foodStored[idIdx] = value;
+		}
+
+		@Override
+		public float getRadius() {
+			return entities.getRadius(ids[idIdx]);
 		}
 	}
 }

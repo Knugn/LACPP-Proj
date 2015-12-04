@@ -15,4 +15,5 @@ public interface IWorld {
 	public IREntities getAllEntities();
 	public IRAnts getAllAnts();
 	public IRHives getAllHives();
+	public IRPheromoneGrid getHivePheromoneGrid();
 }
