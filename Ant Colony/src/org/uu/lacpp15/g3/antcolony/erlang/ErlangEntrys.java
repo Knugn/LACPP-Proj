@@ -60,6 +60,11 @@ public class ErlangEntrys implements IREntities {
                 return  entrys[index].getY();
             }
         }
+
+        @Override
+        public float getRadius() {
+            return 10;
+        }
     }
 
 }

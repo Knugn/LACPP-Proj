@@ -57,5 +57,10 @@ public class ErlangHives implements IRHives {
                 return hives[index].getyPos();
             }
         }
+
+        @Override
+        public float getRadius() {
+            return 10;
+        }
     }
 }

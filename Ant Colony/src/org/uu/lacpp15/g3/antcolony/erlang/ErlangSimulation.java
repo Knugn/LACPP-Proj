@@ -15,9 +15,8 @@ public class ErlangSimulation implements ISimulation {
 
     private long nanoSecCounter;
     private SimpleErlangMap world;
-    private OtpMbox mBox = null;
-    OtpErlangPid pid = null;
-    int nAnts = 100;
+
+    int nAnts = 1000;
     OtpConnection connection = null;
 
     public ErlangSimulation() throws IOException, OtpAuthException, OtpErlangExit {
@@ -26,6 +25,8 @@ public class ErlangSimulation implements ISimulation {
         int max = 100;
         world = new SimpleErlangMap(new AABoxInt2(-max,max,-max,max), nAnts);
         OtpSelf self = new OtpSelf("client");
+
+
 
         String name = "erlang@" + InetAddress.getLocalHost().getHostName();
         System.out.println(name);
@@ -90,28 +91,32 @@ public class ErlangSimulation implements ISimulation {
     @Override
     public void update(long nanoSecDelta) {
         world.reset();
-       // System.out.println("Uppdating ");
-        for(int i = 0; i < nAnts; i++){
-            OtpErlangTuple message = null;
+        int index = 0;
+        while (index < nAnts) {
+            OtpErlangList message = null;
             try {
-                message = (OtpErlangTuple) connection.receive();
-                OtpErlangDouble x = (OtpErlangDouble) message.elementAt(0);
-                OtpErlangDouble y = (OtpErlangDouble) message.elementAt(1);
-                double xPos =x.doubleValue();
-                double yPos =y.doubleValue();
-                world.setAnt(xPos, yPos);
+                message = (OtpErlangList) connection.receive();
+                for (OtpErlangObject obj :
+                        message) {
+                    OtpErlangTuple values = (OtpErlangTuple) obj;
+                    OtpErlangDouble x = (OtpErlangDouble) values.elementAt(0);
+                    OtpErlangDouble y = (OtpErlangDouble) values.elementAt(1);
+                    double xPos = x.doubleValue();
+                    double yPos = y.doubleValue();
+                    world.setAnt(xPos, yPos);
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                    index++;
+                }
+
             } catch (OtpErlangExit otpErlangExit) {
                 otpErlangExit.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             } catch (OtpAuthException e) {
                 e.printStackTrace();
             }
-            //System.out.println("recived " + message);
         }
-
-        nanoSecCounter += nanoSecDelta;
+            nanoSecCounter += nanoSecDelta;
     }
 
     @Override

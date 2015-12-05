@@ -59,6 +59,11 @@ public class ErlangAnts implements IRAnts  {
         }
 
         @Override
+        public float getRadius() {
+            return 3;
+        }
+
+        @Override
         public void setCoord(int n, int value) {
 
         }

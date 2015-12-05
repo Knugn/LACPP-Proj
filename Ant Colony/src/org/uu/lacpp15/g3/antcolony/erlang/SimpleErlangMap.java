@@ -1,10 +1,13 @@
 package org.uu.lacpp15.g3.antcolony.erlang;
 
+import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
+import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntities;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.PheromoneGrid;
 
 /**
  * Created by anders on 2015-12-03.
@@ -15,8 +18,9 @@ public class SimpleErlangMap implements IWorld {
     ErlangEntrys entrys;
     IRAABoxInt2 box;
     ErlangHives hives;
+    private PheromoneGrid hivePheromoneGrid;
 
-    public SimpleErlangMap(IRAABoxInt2 box,int n){
+    public SimpleErlangMap(AABoxInt2 box, int n){
         this.box = box;
 
         ants = new ErlangAnts(n);
@@ -30,6 +34,7 @@ public class SimpleErlangMap implements IWorld {
         ErlangEntry[] entryArray = new ErlangEntry[1];
         entryArray[0] = entry;
         entrys = new ErlangEntrys(entryArray);
+        hivePheromoneGrid = new PheromoneGrid(box);
     }
 
     public void setAnt(double x, double y){
@@ -58,5 +63,10 @@ public class SimpleErlangMap implements IWorld {
     @Override
     public IRHives getAllHives() {
         return hives;
+    }
+
+    @Override
+    public IRPheromoneGrid getHivePheromoneGrid() {
+        return hivePheromoneGrid;
     }
 }
