@@ -11,7 +11,10 @@ import java.awt.image.DataBufferInt;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IRFoodSources;
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
 
 public class Renderer {
 	
@@ -53,6 +56,7 @@ public class Renderer {
 		IRPheromoneGrid hivePheroGrid = simulation.getWorld().getHivePheromoneGrid();
 		final int resx = hivePheroGrid.getResolutionX();
 		final int resy = hivePheroGrid.getResolutionY();
+		//TODO: image can be reused over frames.
 		final BufferedImage hivePheroImage = new BufferedImage(resx,resy,BufferedImage.TYPE_INT_RGB);
 		final int[] pixels = ((DataBufferInt)(hivePheroImage.getRaster().getDataBuffer())).getData();
 		for (int y=0; y < resy; y++) {
@@ -63,18 +67,6 @@ public class Renderer {
 			}
 		}
 		g.drawImage(hivePheroImage, 0, 0, w, h, 0, 0, resx, resy, null);
-		/*
-		DataBufferInt buf = (DataBufferInt)image.getRaster().getDataBuffer();
-		int[] pixels = buf.getData();
-		for (int y=0; y < h; y++) {
-			for (int x=0; x < w; x++) {
-				final int xx = x *res / w;
-				final int yy = y * res / h;
-				final float gridValue = hivePheroGrid.getGridValue(xx, yy);
-				pixels[y*w+x] |= ((int)(gridValue*255))<<16;
-				//pixels[y*w+x] |= 0x00FF0000;
-			}
-		}*/
 		
 		IRAABoxInt2 bounds = simulation.getWorld().getBounds();
 		final int xmin = bounds.getMinX();
@@ -82,22 +74,40 @@ public class Renderer {
 		final int ymin = bounds.getMinY();
 		final int ymax = bounds.getMaxY();
 		
-		g.setColor(Color.orange);
-		IREntityIterator hiveIter = simulation.getWorld().getAllHives().iterator();
-		while (hiveIter.next()) {
-			int x = toImageCoord(hiveIter.getx(),xmin,xmax,w);
-			int y = toImageCoord(hiveIter.gety(),ymin,ymax,h);
-			int r = (int)Math.ceil(hiveIter.getRadius()/(xmax-xmin)*w);
-			g.fillOval(x-r, y-r, r*2, r*2);
+		IRHives hives = simulation.getWorld().getAllHives();
+		if (hives != null) {
+			g.setColor(Color.orange);
+			IREntityIterator hiveIter = hives.iterator();
+			while (hiveIter.next()) {
+				int x = toImageCoord(hiveIter.getx(), xmin, xmax, w);
+				int y = toImageCoord(hiveIter.gety(), ymin, ymax, h);
+				int r = (int) Math.ceil(hiveIter.getRadius() / (xmax - xmin) * w);
+				g.fillOval(x - r, y - r, r * 2, r * 2);
+			}
 		}
 		
-		g.setColor(Color.black);
-		IREntityIterator antsIter = simulation.getWorld().getAllAnts().iterator();
-		while (antsIter.next()) {
-			int x = toImageCoord(antsIter.getx(),xmin,xmax,w);
-			int y = toImageCoord(antsIter.gety(),ymin,ymax,h);
-			int r = (int)Math.ceil(antsIter.getRadius()/(xmax-xmin)*w);
-			g.fillOval(x-r, y-r, r*2, r*2);
+		IRAnts ants = simulation.getWorld().getAllAnts();
+		if (ants != null) {
+			g.setColor(Color.black);
+			IREntityIterator antsIter = simulation.getWorld().getAllAnts().iterator();
+			while (antsIter.next()) {
+				int x = toImageCoord(antsIter.getx(), xmin, xmax, w);
+				int y = toImageCoord(antsIter.gety(), ymin, ymax, h);
+				int r = (int) Math.ceil(antsIter.getRadius() / (xmax - xmin) * w);
+				g.fillOval(x - r, y - r, r * 2, r * 2);
+			}
+		}
+		
+		IRFoodSources foodSources = simulation.getWorld().getAllFoodSources();
+		if (foodSources != null) {
+			g.setColor(Color.white);
+			IREntityIterator foodIter = foodSources.iterator();
+			while (foodIter.next()) {
+				int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
+				int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
+				int r = (int) Math.ceil(foodIter.getRadius() / (xmax - xmin) * w);
+				g.fillOval(x - r, y - r, r * 2, r * 2);
+			}
 		}
 		
 		g.dispose();

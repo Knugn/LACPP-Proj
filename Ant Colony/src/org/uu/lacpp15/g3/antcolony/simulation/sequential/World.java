@@ -4,6 +4,7 @@ import org.uu.lacpp15.g3.antcolony.common.Collision;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IRFoodSources;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.Ants.AntsIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.Hives.HivesIterator;
 
@@ -47,6 +48,12 @@ public class World implements IWorld {
 	@Override
 	public Hives getAllHives() {
 		return hives;
+	}
+	
+	@Override
+	public IRFoodSources getAllFoodSources() {
+		//TODO
+		return null;
 	}
 
 	@Override
