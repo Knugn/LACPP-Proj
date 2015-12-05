@@ -1,6 +1,5 @@
 package org.uu.lacpp15.g3.antcolony.erlang;
 
-import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
@@ -8,6 +7,7 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntities;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.PheromoneGrid;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
 
 /**
  * Created by anders on 2015-12-03.
@@ -16,11 +16,11 @@ public class SimpleErlangMap implements IWorld {
 
     ErlangAnts ants;
     ErlangEntrys entrys;
-    IRAABoxInt2 box;
+    WorldBounds box;
     ErlangHives hives;
     private PheromoneGrid hivePheromoneGrid;
 
-    public SimpleErlangMap(AABoxInt2 box, int n){
+    public SimpleErlangMap(WorldBounds box, int n){
         this.box = box;
 
         ants = new ErlangAnts(n);

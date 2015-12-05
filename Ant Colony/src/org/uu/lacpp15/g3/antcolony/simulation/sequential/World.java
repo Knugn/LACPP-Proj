@@ -1,6 +1,5 @@
 package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 
-import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 import org.uu.lacpp15.g3.antcolony.common.Collision;
 import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
 import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
@@ -10,14 +9,14 @@ import org.uu.lacpp15.g3.antcolony.simulation.sequential.Hives.HivesIterator;
 
 public class World implements IWorld {
 	
-	private AABoxInt2	bounds;
+	private WorldBounds	bounds;
 	private Entities	entities;
 	private Ants		ants;
 	private Hives		hives;
 	
 	private PheromoneGrid	hivePheromoneGrid, foodPheromoneGrid;
 	
-	public World(AABoxInt2 bounds, int maxEntities, int nAnts, int nHives) {
+	public World(WorldBounds bounds, int maxEntities, int nAnts, int nHives) {
 		if (bounds == null)
 			throw new IllegalArgumentException("bounds must not be null.");
 		this.bounds = bounds;
@@ -56,6 +55,7 @@ public class World implements IWorld {
 	}
 	
 	public void update(long nanoSecDelta) {
+		
 		AntsIterator antsIter = ants.iterator();
 		while (antsIter.next()) {
 			// clamp the ants inside boundaries
@@ -81,8 +81,10 @@ public class World implements IWorld {
 					antsIter.setNanosSinceHive(antsIter.getNanosSinceHive() + nanoSecDelta);
 				}
 			}
-			float hivePheroDrop = Math.max(0, 0.1f*(1-antsIter.getNanosSinceHive()/1000000000 / 10f));
-			hivePheromoneGrid.add(antsIter.getx(), antsIter.gety(), hivePheroDrop);
+			//float hivePheroDrop = Math.max(0, 0.1f*(1-antsIter.getNanosSinceHive()/1000000000 / 10f));
+			//hivePheromoneGrid.add(antsIter.getx(), antsIter.gety(), hivePheroDrop);
+			float hivePheroDrop = Math.max(0, (1-antsIter.getNanosSinceHive()/1000000000 / 10f));
+			hivePheromoneGrid.dropPheromones(antsIter.getx(), antsIter.gety(), hivePheroDrop);
 		}
 		hivePheromoneGrid.update(nanoSecDelta);
 	}

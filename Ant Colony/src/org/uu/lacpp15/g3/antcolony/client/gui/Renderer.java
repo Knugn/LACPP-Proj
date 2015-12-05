@@ -51,17 +51,18 @@ public class Renderer {
 		g.fillRect(0, 0, w, h);
 		
 		IRPheromoneGrid hivePheroGrid = simulation.getWorld().getHivePheromoneGrid();
-		final int res = hivePheroGrid.getResolution();
-		final BufferedImage hivePheroImage = new BufferedImage(res,res,BufferedImage.TYPE_INT_RGB);
+		final int resx = hivePheroGrid.getResolutionX();
+		final int resy = hivePheroGrid.getResolutionY();
+		final BufferedImage hivePheroImage = new BufferedImage(resx,resy,BufferedImage.TYPE_INT_RGB);
 		final int[] pixels = ((DataBufferInt)(hivePheroImage.getRaster().getDataBuffer())).getData();
-		for (int y=0; y < res; y++) {
-			for (int x=0; x < res; x++) {
+		for (int y=0; y < resy; y++) {
+			for (int x=0; x < resx; x++) {
 				final float gridValue = hivePheroGrid.getGridValue(x, y);
 				final int gridValueByte = (int)(gridValue*255);
-				pixels[y*res+x] = ((0xFF-gridValueByte)<<8) | (gridValueByte << 16);
+				pixels[y*resx+x] = ((0xFF-gridValueByte)<<8) | (gridValueByte << 16);
 			}
 		}
-		g.drawImage(hivePheroImage, 0, 0, w, h, 0, 0, res, res, null);
+		g.drawImage(hivePheroImage, 0, 0, w, h, 0, 0, resx, resy, null);
 		/*
 		DataBufferInt buf = (DataBufferInt)image.getRaster().getDataBuffer();
 		int[] pixels = buf.getData();
