@@ -25,12 +25,12 @@ public class SimpleErlangMap implements IWorld {
 
         ants = new ErlangAnts(n);
 
-        ErlangHive hive = new ErlangHive(5,5);
+        ErlangHive hive = new ErlangHive(0,0);
         ErlangHive[] hiveArray = new ErlangHive[1];
         hiveArray[0] = hive;
         hives = new ErlangHives(hiveArray);
 
-        ErlangEntry entry = new ErlangEntry(8,8);
+        ErlangEntry entry = new ErlangEntry(5,5);
         ErlangEntry[] entryArray = new ErlangEntry[1];
         entryArray[0] = entry;
         entrys = new ErlangEntrys(entryArray);

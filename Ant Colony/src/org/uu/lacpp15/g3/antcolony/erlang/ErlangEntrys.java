@@ -63,7 +63,7 @@ public class ErlangEntrys implements IREntities {
 
         @Override
         public float getRadius() {
-            return 10;
+            return 2;
         }
     }
 
