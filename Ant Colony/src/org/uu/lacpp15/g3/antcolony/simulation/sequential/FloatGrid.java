@@ -39,7 +39,26 @@ public class FloatGrid {
 		}
 	}
 	
-	public void clampFromAbove(float max) {
+	public void clampBelow(int x, int y, float min) {
+		final int idx = y*width+x;
+		if (grid[idx] < min)
+			grid[idx] = min;
+	}
+	
+	public void clampAbove(int x, int y, float max) {
+		final int idx = y*width+x;
+		if (grid[idx] > max)
+			grid[idx] = max;
+	}
+	
+	public void clampAllFromBelow(float min) {
+		for (int i = 0; i < grid.length; i++) {
+			if (grid[i] < min)
+			grid[i] = min;
+		} 
+	}
+
+	public void clampAllFromAbove(float max) {
 		for (int i = 0; i < grid.length; i++) {
 			if (grid[i] > max)
 			grid[i] = max;

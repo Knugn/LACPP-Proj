@@ -1,12 +1,12 @@
 package org.uu.lacpp15.g3.antcolony.erlang;
 
-import com.ericsson.otp.erlang.*;
-import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
-import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
-import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
-
 import java.io.IOException;
 import java.net.InetAddress;
+
+import com.ericsson.otp.erlang.*;
+import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
+import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
 
 /**
  * Created by anders on 2015-12-03.
@@ -16,14 +16,15 @@ public class ErlangSimulation implements ISimulation {
     private long nanoSecCounter;
     private SimpleErlangMap world;
 
-    int nAnts = 10;
+    int nAnts = 300;
     OtpConnection connection = null;
 
     public ErlangSimulation() throws IOException, OtpAuthException, OtpErlangExit {
         System.out.println("Simulation started ");
-
+        int hiveOffset = 80;
         int max = 100;
-        world = new SimpleErlangMap(new AABoxInt2(-max,max,-max,max), nAnts);
+        int start = 10;
+        world = new SimpleErlangMap(new WorldBounds(0,max,0,max), nAnts,start,start,start+hiveOffset,start+hiveOffset);
         OtpSelf self = new OtpSelf("client");
 
 
@@ -58,7 +59,7 @@ public class ErlangSimulation implements ISimulation {
         atom = new OtpErlangAtom("nrAnts");
         OtpErlangInt nrAnts = new OtpErlangInt(nAnts);
 
-        objects = new OtpErlangObject[2];
+
         objects[0] = atom;
         objects[1] = nrAnts;
         send = new OtpErlangTuple(objects);
@@ -68,15 +69,28 @@ public class ErlangSimulation implements ISimulation {
         atom = new OtpErlangAtom("worldMax");
         OtpErlangFloat worldSize = new OtpErlangFloat((float)max);
 
-        objects = new OtpErlangObject[2];
+
         objects[0] = atom;
         objects[1] = worldSize;
         send = new OtpErlangTuple(objects);
         connection.send(runPid,send);
         System.out.println("All messages sent ");
 
+        atom = new OtpErlangAtom("nrActors");
+        OtpErlangInt nrActors = new OtpErlangInt(10);
+        objects[0] = atom;
+        objects[1] = nrActors;
+        System.out.println("recived run pid " + runPid);
+        send = new OtpErlangTuple(objects);
+        connection.send(runPid,send);
 
 
+        atom = new OtpErlangAtom("start");
+        objects[0] = atom;
+        objects[1] = new OtpErlangInt(start);
+        System.out.println("recived run pid " + runPid);
+        send = new OtpErlangTuple(objects);
+        connection.send(runPid,send);
 
 
 
@@ -99,10 +113,19 @@ public class ErlangSimulation implements ISimulation {
                 for (OtpErlangObject obj :
                         message) {
                     OtpErlangTuple values = (OtpErlangTuple) obj;
-                    OtpErlangDouble x = (OtpErlangDouble) values.elementAt(0);
-                    OtpErlangDouble y = (OtpErlangDouble) values.elementAt(1);
-                    double xPos = x.doubleValue();
-                    double yPos = y.doubleValue();
+                    double xPos;
+                    double yPos;
+                    if (values.elementAt(0) instanceof OtpErlangDouble){
+                        xPos  =   ((OtpErlangDouble) values.elementAt(0)).doubleValue();
+                    }else{
+                        xPos  =   ((OtpErlangLong) values.elementAt(0)).longValue();
+                    }
+                    if (values.elementAt(1) instanceof OtpErlangDouble){
+                        yPos  =   ((OtpErlangDouble) values.elementAt(1)).doubleValue();
+                    }else{
+                        yPos  =   ((OtpErlangLong) values.elementAt(1)).longValue();
+                    }
+
                     world.setAnt(xPos, yPos);
 
                     index++;

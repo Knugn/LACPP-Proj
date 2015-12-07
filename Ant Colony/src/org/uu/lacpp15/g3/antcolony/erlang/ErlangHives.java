@@ -60,7 +60,7 @@ public class ErlangHives implements IRHives {
 
         @Override
         public float getRadius() {
-            return 2;
+            return 4;
         }
     }
 }

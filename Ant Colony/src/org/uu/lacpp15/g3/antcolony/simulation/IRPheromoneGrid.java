@@ -7,11 +7,15 @@ package org.uu.lacpp15.g3.antcolony.simulation;
  */
 public interface IRPheromoneGrid {
 	/**
-	 * @return the resolution of the grid, which is same along x and y.
+	 * @return the resolution of the grid along x.
 	 */
-	public int getResolution();
+	public int getResolutionX();
 	/**
-	 * Retrieve the value of the grid at the given coordinates.
+	 * @return the resolution of the grid along y.
+	 */
+	public int getResolutionY();
+	/**
+	 * Retrieve the value of the grid at the given grid coordinates.
 	 * @param x
 	 * @param y
 	 * @return the pheromone value at (x,y)
