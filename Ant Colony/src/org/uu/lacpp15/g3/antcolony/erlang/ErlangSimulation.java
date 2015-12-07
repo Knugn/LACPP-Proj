@@ -2,33 +2,11 @@ package org.uu.lacpp15.g3.antcolony.erlang;
 
 import java.io.IOException;
 import java.net.InetAddress;
-<<<<<<< HEAD
 
 import com.ericsson.otp.erlang.*;
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
-=======
->>>>>>> cc16e244553cbe34f1321d875226b14331d34712
-
-import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
-import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
-
-import com.ericsson.otp.erlang.OtpAuthException;
-import com.ericsson.otp.erlang.OtpConnection;
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangDouble;
-import com.ericsson.otp.erlang.OtpErlangExit;
-import com.ericsson.otp.erlang.OtpErlangExternalFun;
-import com.ericsson.otp.erlang.OtpErlangFloat;
-import com.ericsson.otp.erlang.OtpErlangInt;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpPeer;
-import com.ericsson.otp.erlang.OtpSelf;
 
 /**
  * Created by anders on 2015-12-03.
@@ -45,12 +23,10 @@ public class ErlangSimulation implements ISimulation {
         System.out.println("Simulation started ");
         int hiveOffset = 80;
         int max = 100;
-<<<<<<< HEAD
+
         int start = 10;
         world = new SimpleErlangMap(new WorldBounds(0,max,0,max), nAnts,start,start,start+hiveOffset,start+hiveOffset);
-=======
-        world = new SimpleErlangMap(new WorldBounds(-max,max,-max,max), nAnts);
->>>>>>> cc16e244553cbe34f1321d875226b14331d34712
+
         OtpSelf self = new OtpSelf("client");
 
 
