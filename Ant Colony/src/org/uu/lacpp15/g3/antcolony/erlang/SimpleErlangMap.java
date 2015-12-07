@@ -16,20 +16,14 @@ import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
 public class SimpleErlangMap implements IWorld {
 
     ErlangAnts ants;
-<<<<<<< HEAD
     ErlangFood food;
-=======
-    ErlangEntrys entrys;
->>>>>>> cc16e244553cbe34f1321d875226b14331d34712
     WorldBounds box;
     ErlangHives hives;
     private PheromoneGrid hivePheromoneGrid;
 
-<<<<<<< HEAD
+
     public SimpleErlangMap(WorldBounds box, int n,int hiveX,int hiveY,int foodX,int foodY){
-=======
-    public SimpleErlangMap(WorldBounds box, int n){
->>>>>>> cc16e244553cbe34f1321d875226b14331d34712
+
         this.box = box;
 
         ants = new ErlangAnts(n);

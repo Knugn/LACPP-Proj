@@ -68,16 +68,8 @@ public class ErlangAnts implements IRAnts  {
 
         }
 
-      /*  public int getFoodCarried() {
-            return foodCarried[idIdx];
-        }
 
-        public void setFoodCarried(int value) {
-            if (value < 0)
-                throw new IllegalArgumentException();
-            foodCarried[idIdx] = value;
-        }
-*/
+
         @Override
         public long getId() {
             return index;

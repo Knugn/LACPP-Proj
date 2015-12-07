@@ -16,87 +16,47 @@ public class ErlangSimulation implements ISimulation {
     private long nanoSecCounter;
     private SimpleErlangMap world;
 
-    int nAnts = 300;
+    int nAnts = 15000;
     OtpConnection connection = null;
 
     public ErlangSimulation() throws IOException, OtpAuthException, OtpErlangExit {
         System.out.println("Simulation started ");
         int hiveOffset = 80;
-        int max = 100;
+        int max = 200;
+        int hivePos = 10;
+        int nrActors = 100;
+        int foodX = 180;
+        int foodY = 150;
+        world = new SimpleErlangMap(new WorldBounds(0,max,0,max), nAnts,hivePos,hivePos,foodX,foodY);
 
-        int start = 10;
-        world = new SimpleErlangMap(new WorldBounds(0,max,0,max), nAnts,start,start,start+hiveOffset,start+hiveOffset);
-
+        //Conect to server
         OtpSelf self = new OtpSelf("client");
-
-
-
         String name = "erlang@" + InetAddress.getLocalHost().getHostName();
         System.out.println(name);
         OtpPeer other  = new OtpPeer(name);
         connection = self.connect(other);
 
-
-
+        //Starts main function
         OtpErlangExternalFun input = new OtpErlangExternalFun("main","run",0);
         OtpErlangList list = new OtpErlangList(input);
-
         System.out.println("Starting run ");
         connection.sendRPC("erlang","spawn",list);
         OtpErlangPid runPid = (OtpErlangPid) connection.receiveRPC();
 
-
-
-        OtpErlangAtom atom = new OtpErlangAtom("masterPid");
-
-
-        OtpErlangObject[] objects = new OtpErlangObject[2];
+        //Init server
+        OtpErlangAtom atom = new OtpErlangAtom("init");
+        OtpErlangObject[] objects = new OtpErlangObject[8];
         objects[0] = atom;
         objects[1] = self.pid();
-        System.out.println("recived run pid " + runPid);
+        objects[2] = new OtpErlangInt(nAnts);
+        objects[3] = new OtpErlangFloat((float)max);
+        objects[4] = new OtpErlangInt(hivePos);
+        objects[5] = new OtpErlangInt(foodX);
+        objects[6] = new OtpErlangInt(foodY);
+        objects[7] = new OtpErlangInt(nrActors);
+        System.out.println("sending init " + runPid);
         OtpErlangTuple send = new OtpErlangTuple(objects);
         connection.send(runPid,send);
-
-        //Sends the number of ants
-        atom = new OtpErlangAtom("nrAnts");
-        OtpErlangInt nrAnts = new OtpErlangInt(nAnts);
-
-
-        objects[0] = atom;
-        objects[1] = nrAnts;
-        send = new OtpErlangTuple(objects);
-        connection.send(runPid,send);
-
-        //Send world size
-        atom = new OtpErlangAtom("worldMax");
-        OtpErlangFloat worldSize = new OtpErlangFloat((float)max);
-
-
-        objects[0] = atom;
-        objects[1] = worldSize;
-        send = new OtpErlangTuple(objects);
-        connection.send(runPid,send);
-        System.out.println("All messages sent ");
-
-        atom = new OtpErlangAtom("nrActors");
-        OtpErlangInt nrActors = new OtpErlangInt(10);
-        objects[0] = atom;
-        objects[1] = nrActors;
-        System.out.println("recived run pid " + runPid);
-        send = new OtpErlangTuple(objects);
-        connection.send(runPid,send);
-
-
-        atom = new OtpErlangAtom("start");
-        objects[0] = atom;
-        objects[1] = new OtpErlangInt(start);
-        System.out.println("recived run pid " + runPid);
-        send = new OtpErlangTuple(objects);
-        connection.send(runPid,send);
-
-
-
-
     }
 
     @Override
@@ -108,8 +68,8 @@ public class ErlangSimulation implements ISimulation {
     public void update(long nanoSecDelta) {
         world.reset();
         int index = 0;
+        OtpErlangList message;
         while (index < nAnts) {
-            OtpErlangList message = null;
             try {
                 message = (OtpErlangList) connection.receive();
                 for (OtpErlangObject obj :
@@ -117,11 +77,13 @@ public class ErlangSimulation implements ISimulation {
                     OtpErlangTuple values = (OtpErlangTuple) obj;
                     double xPos;
                     double yPos;
+
                     if (values.elementAt(0) instanceof OtpErlangDouble){
                         xPos  =   ((OtpErlangDouble) values.elementAt(0)).doubleValue();
                     }else{
                         xPos  =   ((OtpErlangLong) values.elementAt(0)).longValue();
                     }
+
                     if (values.elementAt(1) instanceof OtpErlangDouble){
                         yPos  =   ((OtpErlangDouble) values.elementAt(1)).doubleValue();
                     }else{
@@ -141,7 +103,7 @@ public class ErlangSimulation implements ISimulation {
                 e.printStackTrace();
             }
         }
-            nanoSecCounter += nanoSecDelta;
+        nanoSecCounter += nanoSecDelta;
     }
 
     @Override
