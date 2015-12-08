@@ -14,7 +14,7 @@ public class Simulation implements ISimulation {
 	public Simulation() {
 		final int min = Integer.MIN_VALUE /4;
 		final int max = -min;
-		world = new World(new WorldBounds(min,max,min,max), 1000, 15000, 1, 10);
+		world = new World(new WorldBounds(min,max,min,max), 1000, 50000, 1, 10);
 		ai = new AntsAI(world);
 	}
 	

@@ -15,15 +15,15 @@ import org.uu.lacpp15.g3.antcolony.simulation.sequential.WorldBounds;
  */
 public class SimpleErlangMap implements IWorld {
 
-    ErlangAnts ants;
-    ErlangFood food;
-    WorldBounds box;
-    ErlangHives hives;
-    private PheromoneGrid hivePheromoneGrid;
-    ErlangPheromone pheromone;
+    private ErlangAnts ants;
+    private ErlangFood food;
+    private WorldBounds box;
+    private ErlangHives hives;
+    private ErlangPheromone hivePheromoneGrid;
+    private ErlangPheromone foodPheromone;
 
 
-    public SimpleErlangMap(WorldBounds box, int n,int hiveX,int hiveY,int foodX,int foodY){
+    public SimpleErlangMap(WorldBounds box, int n,int hiveX,int hiveY,ErlangFood food){
 
         this.box = box;
 
@@ -34,12 +34,10 @@ public class SimpleErlangMap implements IWorld {
         hiveArray[0] = hive;
         hives = new ErlangHives(hiveArray);
 
-        ErlangEntry entry = new ErlangEntry(foodX,foodY);
-        ErlangEntry[] entryArray = new ErlangEntry[1];
-        entryArray[0] = entry;
-        food = new ErlangFood(entryArray);
-        hivePheromoneGrid = new PheromoneGrid(box);
-        pheromone = new ErlangPheromone();
+
+        this.food = food;
+        hivePheromoneGrid = new ErlangPheromone(box);
+        foodPheromone = new ErlangPheromone(box);
     }
 
     public void setAnt(double x, double y){
@@ -48,6 +46,16 @@ public class SimpleErlangMap implements IWorld {
 
     public void reset(){
         ants.reset();
+        hivePheromoneGrid.restet();
+        foodPheromone.restet();
+    }
+
+    public void addFoodPheromon(int x,int y,float strength){
+        foodPheromone.add(x,y,strength);
+    }
+
+    public void addHivePheromon(int x,int y,float strength){
+        hivePheromoneGrid.add(x,y,strength);
     }
 
     @Override
@@ -82,6 +90,6 @@ public class SimpleErlangMap implements IWorld {
 
     @Override
     public IRPheromoneGrid getFoodPheromoneGrid() {
-        return pheromone;
+        return foodPheromone;
     }
 }
