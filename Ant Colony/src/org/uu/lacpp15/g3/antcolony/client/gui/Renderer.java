@@ -87,7 +87,7 @@ public class Renderer {
 			while (hiveIter.next()) {
 				int x = toImageCoord(hiveIter.getx(), xmin, xmax, w);
 				int y = toImageCoord(hiveIter.gety(), ymin, ymax, h);
-				int r = (int) Math.ceil(hiveIter.getRadius() / (xmax - xmin) * w);
+				int r = (int)(w*hiveIter.getRadius() / (xmax - xmin));
 				g.fillOval(x - r, y - r, r * 2, r * 2);
 			}
 		}
@@ -99,7 +99,7 @@ public class Renderer {
 			while (foodIter.next()) {
 				int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
 				int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
-				int r = (int) Math.ceil(foodIter.getRadius() / (xmax - xmin) * w);
+				int r = (int)(w*foodIter.getRadius() / (xmax - xmin));
 				g.fillOval(x - r, y - r, r * 2, r * 2);
 			}
 		}
@@ -111,8 +111,8 @@ public class Renderer {
 			while (antsIter.next()) {
 				int x = toImageCoord(antsIter.getx(), xmin, xmax, w);
 				int y = toImageCoord(antsIter.gety(), ymin, ymax, h);
-				int r = (int) Math.ceil(antsIter.getRadius() / (xmax - xmin) * w);
-				g.fillOval(x - r, y - r, r * 2, r * 2);
+				int r = (int)(w*antsIter.getRadius() / (xmax - xmin));
+				g.fillRect(x - r, y - r, r * 2, r * 2);
 			}
 		}
 		
@@ -122,7 +122,7 @@ public class Renderer {
 	}
 	
 	private static int toImageCoord(int a, int amin, int amax, int imgSize) {
-		return (int)Math.round((a-amin+0.5f)/(amax-amin)*imgSize);
+		return (int)((long)imgSize*(a-amin)/(amax-amin));
 	}
 	
 }
