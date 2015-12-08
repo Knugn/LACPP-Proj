@@ -19,25 +19,26 @@ import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
 public class Renderer {
 	
 	private Canvas canvas;
-	private BufferedImage image;
+	//private BufferedImage image;
+	private BufferedImage bgImage;
 	
 	public Renderer() {
 		canvas = new Canvas();
 		canvas.setPreferredSize(new Dimension(512,512));
-		setImageSize(512,512);
+		//setImageSize(512,512);
 	}
-	
+	/*
 	public BufferedImage getImage() {
 		return image;
-	}
+	}*/
 	
 	public Canvas getCanvas() {
 		return canvas;
 	}
-	
+	/*
 	public void setImageSize(int width, int height) {
 		this.image = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
-	}
+	}*/
 	
 	public void render(ISimulation simulation) {
 		BufferStrategy bs = canvas.getBufferStrategy();
@@ -49,17 +50,25 @@ public class Renderer {
 		
 		final int w = canvas.getWidth();
 		final int h = canvas.getHeight();
-		g.clearRect(0, 0, w, h);
-		g.setColor(Color.green);
-		g.fillRect(0, 0, w, h);
 		
+		renderBackground(simulation, g, w, h);
+		
+		renderEntities(simulation, g, w, h);
+		
+		g.dispose();
+		
+		bs.show();
+	}
+	
+	private void renderBackground(ISimulation simulation, Graphics2D g, final int w, final int h) {
 		IRPheromoneGrid hivePheroGrid = simulation.getWorld().getHivePheromoneGrid();
 		IRPheromoneGrid foodPheroGrid = simulation.getWorld().getFoodPheromoneGrid();
 		final int resx = hivePheroGrid.getResolutionX();
 		final int resy = hivePheroGrid.getResolutionY();
-		//TODO: image can be reused over frames.
-		final BufferedImage hivePheroImage = new BufferedImage(resx,resy,BufferedImage.TYPE_INT_RGB);
-		final int[] pixels = ((DataBufferInt)(hivePheroImage.getRaster().getDataBuffer())).getData();
+		
+		if (bgImage == null || bgImage.getWidth() != resx || bgImage.getHeight() != resy)
+			bgImage = new BufferedImage(resx,resy,BufferedImage.TYPE_INT_RGB);
+		final int[] pixels = ((DataBufferInt)(bgImage.getRaster().getDataBuffer())).getData();
 		for (int y=0; y < resy; y++) {
 			for (int x=0; x < resx; x++) {
 				final float hiveGridValue = hivePheroGrid.getGridValue(x, y);
@@ -72,8 +81,10 @@ public class Renderer {
 						| foodGridValueByte;
 			}
 		}
-		g.drawImage(hivePheroImage, 0, 0, w, h, 0, 0, resx, resy, null);
-		
+		g.drawImage(bgImage, 0, 0, w, h, 0, 0, resx, resy, null);
+	}
+
+	private void renderEntities(ISimulation simulation, Graphics2D g, final int w, final int h) {
 		IRAABoxInt2 bounds = simulation.getWorld().getBounds();
 		final int xmin = bounds.getMinX();
 		final int xmax = bounds.getMaxX();
@@ -85,10 +96,10 @@ public class Renderer {
 			g.setColor(Color.orange);
 			IREntityIterator hiveIter = hives.iterator();
 			while (hiveIter.next()) {
-				int x = toImageCoord(hiveIter.getx(), xmin, xmax, w);
-				int y = toImageCoord(hiveIter.gety(), ymin, ymax, h);
-				int r = (int)(w*hiveIter.getRadius() / (xmax - xmin));
-				g.fillOval(x - r, y - r, r * 2, r * 2);
+				final int x = toImageCoord(hiveIter.getx(), xmin, xmax, w);
+				final int y = toImageCoord(hiveIter.gety(), ymin, ymax, h);
+				final int d = (int)(w*hiveIter.getRadius()*2 / (xmax - xmin));
+				g.fillOval(x - d/2, y - d/2, d, d);
 			}
 		}
 
@@ -97,10 +108,10 @@ public class Renderer {
 			g.setColor(Color.white);
 			IREntityIterator foodIter = foodSources.iterator();
 			while (foodIter.next()) {
-				int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
-				int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
-				int r = (int)(w*foodIter.getRadius() / (xmax - xmin));
-				g.fillOval(x - r, y - r, r * 2, r * 2);
+				final int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
+				final int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
+				final int d = (int)(w*foodIter.getRadius()*2 / (xmax - xmin));
+				g.fillOval(x - d/2, y - d/2, d, d);
 			}
 		}
 		
@@ -111,14 +122,10 @@ public class Renderer {
 			while (antsIter.next()) {
 				int x = toImageCoord(antsIter.getx(), xmin, xmax, w);
 				int y = toImageCoord(antsIter.gety(), ymin, ymax, h);
-				int r = (int)(w*antsIter.getRadius() / (xmax - xmin));
-				g.fillRect(x - r, y - r, r * 2, r * 2);
+				int d = (int)(w*antsIter.getRadius()*2 / (xmax - xmin));
+				g.fillRect(x - d/2, y - d/2, d, d);
 			}
 		}
-		
-		g.dispose();
-		
-		bs.show();
 	}
 	
 	private static int toImageCoord(int a, int amin, int amax, int imgSize) {
