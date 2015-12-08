@@ -3,13 +3,10 @@ package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 import java.util.Random;
 
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ant;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ants;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Entities;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.EntityIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSource;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSources;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hive;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hives;
 
 public class World implements IWorld {
@@ -86,52 +83,6 @@ public class World implements IWorld {
 	@Override
 	public PheromoneGrid getFoodPheromoneGrid() {
 		return foodPheromoneGrid;
-	}
-	
-	public void update(long nanoSecDelta) {
-		
-		EntityIterator<Ant> antsIter = ants.iterator();
-		while (antsIter.next()) {
-			Ant ant = antsIter.getObject();
-			ant.clamp(bounds);
-			
-			EntityIterator<Hive> hiveIter = hives.iterator();
-			while (hiveIter.next()) {
-				Hive hive = hiveIter.getObject();
-				if (ant.collides(hive)) {
-					ant.dropFood(hive);
-					ant.setHivePheroDrop(1);
-					break;
-				}
-				else {
-					ant.scaleHivePheroDrop((float)Math.pow(0.90, nanoSecDelta / (double)1000000000));
-				}
-			}
-			
-			EntityIterator<FoodSource> foodIter = foodSources.iterator();
-			boolean foundFood = false;
-			while (foodIter.next()) {
-				FoodSource food = foodIter.getObject();
-				if (food.hasFood() && ant.collides(food)) {
-					foundFood = true;
-					if (!ant.hasFood()) {
-						ant.takeFood(food, 1);
-					}
-					break;
-				}
-			}
-			if (foundFood) {
-				ant.setFoodPheroDrop(1);
-			}
-			else {
-				ant.scaleFoodPheroDrop((float)Math.pow(0.90, nanoSecDelta / (double)1000000000));
-			}
-			
-			hivePheromoneGrid.dropPheromones(ant.getx(), ant.gety(), ant.getHivePheroDrop());
-			foodPheromoneGrid.dropPheromones(ant.getx(), ant.gety(), ant.getFoodPheroDrop());
-		}
-		hivePheromoneGrid.update(nanoSecDelta);
-		foodPheromoneGrid.update(nanoSecDelta);
 	}
 
 }
