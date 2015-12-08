@@ -37,10 +37,10 @@ public interface IREntityIterator {
 	 */
 	public int gety();
 	/**
-	 * @param n the index of the coordinate to get, 0 for x and 1 for y.
+	 * @param dim the index of the coordinate to get, 0 for x and 1 for y.
 	 * @return the n-th coordinate of the current element.
 	 */
-	public int getCoord(int n);
+	public int getCoord(int dim);
 	/**
 	 * @return the radisu of the current element.
 	 */

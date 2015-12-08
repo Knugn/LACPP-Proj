@@ -52,6 +52,7 @@ public class FpsLoop {
 	public void runLoop()
 	{
 		long lastLoopTime = System.nanoTime();
+		final long desiredFrameNanos = (long) (NANOS_PER_SECOND / fpsTarget);
 		
 		while (!stop)
 		{
@@ -70,11 +71,12 @@ public class FpsLoop {
 				fpsReportCounter -= NANOS_PER_SECOND;
 				frameCounter = 0;
 			}
-			
+			if (nanoSecDelta > desiredFrameNanos)
+				nanoSecDelta = desiredFrameNanos;
 			for (FrameUpdater fu : frameUpdaters)
 				fu.update(nanoSecDelta);
 			
-			final long desiredFrameNanos = (long) (NANOS_PER_SECOND / fpsTarget);
+			
 			final long actualFameNanos = System.nanoTime() - lastLoopTime;
 			final long sleepMillis = (desiredFrameNanos - actualFameNanos) / 1000000;
 			if (sleepMillis > 0) {
@@ -82,7 +84,7 @@ public class FpsLoop {
 					Thread.sleep(sleepMillis);
 				}
 				catch (InterruptedException e) {
-					
+					e.printStackTrace();
 				}
 			}
 		}

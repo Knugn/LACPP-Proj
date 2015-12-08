@@ -18,4 +18,5 @@ public interface IWorld {
 	public IRHives getAllHives();
 	public IRFoodSources getAllFoodSources();
 	public IRPheromoneGrid getHivePheromoneGrid();
+	public IRPheromoneGrid getFoodPheromoneGrid();
 }

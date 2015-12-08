@@ -1,4 +1,4 @@
-package org.uu.lacpp15.g3.antcolony.simulation.sequential;
+package org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.old;
 
 import org.uu.lacpp15.g3.antcolony.simulation.entities.AEntityIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
@@ -81,6 +81,11 @@ public class Ants implements IRAnts {
 			// All ants have same radius
 			return radius;
 		}
+
+		@Override
+		public void setRadius(float r) {
+			throw new RuntimeException("Setting ant radius is not supported.");
+		}
 		
 		public long getNanosSinceHive() {
 			return nanosSinceHive[idIdx];
@@ -89,6 +94,7 @@ public class Ants implements IRAnts {
 		public void setNanosSinceHive(long nanos) {
 			nanosSinceHive[idIdx] = nanos;
 		}
+
 	}
 	
 }

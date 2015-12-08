@@ -1,43 +1,66 @@
 package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 
-import org.uu.lacpp15.g3.antcolony.common.Collision;
-import org.uu.lacpp15.g3.antcolony.common.IRAABoxInt2;
-import org.uu.lacpp15.g3.antcolony.simulation.IRPheromoneGrid;
+import java.util.Random;
+
 import org.uu.lacpp15.g3.antcolony.simulation.IWorld;
-import org.uu.lacpp15.g3.antcolony.simulation.entities.IRFoodSources;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.Ants.AntsIterator;
-import org.uu.lacpp15.g3.antcolony.simulation.sequential.Hives.HivesIterator;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ant;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ants;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Entities;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.EntityIterator;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSource;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSources;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hive;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hives;
 
 public class World implements IWorld {
 	
 	private WorldBounds	bounds;
-	private Entities	entities;
+	private Entities	allEntities;
 	private Ants		ants;
 	private Hives		hives;
+	private FoodSources foodSources;
 	
 	private PheromoneGrid	hivePheromoneGrid, foodPheromoneGrid;
 	
-	public World(WorldBounds bounds, int maxEntities, int nAnts, int nHives) {
+	public World(WorldBounds bounds, int maxEntities, int nAnts, int nHives, int nFoodSources) {
 		if (bounds == null)
 			throw new IllegalArgumentException("bounds must not be null.");
+		
 		this.bounds = bounds;
-		this.entities = new Entities(maxEntities);
+		
+		this.allEntities = new Entities(maxEntities);
 		final int w = bounds.xmax - bounds.xmin;
+		final int h = bounds.ymax - bounds.ymin;
 		final float maxSpeed = w / 20f; // cross the world in 20s
 		final float antRadius = w / 256f;
-		this.ants = new Ants(maxSpeed, antRadius, entities, nAnts);
-		this.hives = new Hives(antRadius * 16, entities, nHives);
+		this.ants = new Ants(nAnts, antRadius, maxSpeed);
+		this.hives = new Hives(nHives, antRadius * 16);
+		this.foodSources = new FoodSources(nFoodSources);
+		Random rand = new Random();
+		for (int i=0; i<nFoodSources; i++) {
+			this.foodSources.add(
+					new FoodSource(
+							bounds.xmin + rand.nextInt(w),
+							bounds.ymin + rand.nextInt(h),
+							antRadius*4,
+							1000));
+		}
+		
+		this.allEntities.addAll(ants);
+		this.allEntities.addAll(hives);
+		
 		this.hivePheromoneGrid = new PheromoneGrid(bounds);
+		this.foodPheromoneGrid = new PheromoneGrid(bounds);
 	}
 	
 	@Override
-	public IRAABoxInt2 getBounds() {
+	public WorldBounds getBounds() {
 		return bounds;
 	}
 	
 	@Override
 	public Entities getAllEntities() {
-		return entities;
+		return allEntities;
 	}
 	
 	@Override
@@ -51,49 +74,64 @@ public class World implements IWorld {
 	}
 	
 	@Override
-	public IRFoodSources getAllFoodSources() {
-		//TODO
-		return null;
+	public FoodSources getAllFoodSources() {
+		return foodSources;
 	}
 
 	@Override
-	public IRPheromoneGrid getHivePheromoneGrid() {
+	public PheromoneGrid getHivePheromoneGrid() {
 		return hivePheromoneGrid;
+	}
+	
+	@Override
+	public PheromoneGrid getFoodPheromoneGrid() {
+		return foodPheromoneGrid;
 	}
 	
 	public void update(long nanoSecDelta) {
 		
-		AntsIterator antsIter = ants.iterator();
+		EntityIterator<Ant> antsIter = ants.iterator();
 		while (antsIter.next()) {
-			// clamp the ants inside boundaries
-			final int x = antsIter.getx();
-			if (x < bounds.xmin)
-				antsIter.setx(bounds.xmin);
-			if (x >= bounds.xmax)
-				antsIter.setx(bounds.xmax-1);
-			final int y = antsIter.gety();
-			if (y < bounds.ymin)
-				antsIter.sety(bounds.ymin);
-			if (y >= bounds.ymax)
-				antsIter.sety(bounds.ymax-1);
+			Ant ant = antsIter.getObject();
+			ant.clamp(bounds);
 			
-			HivesIterator hiveIter = hives.iterator();
+			EntityIterator<Hive> hiveIter = hives.iterator();
 			while (hiveIter.next()) {
-				if (Collision.collides(
-						antsIter.getx(), antsIter.gety(), antsIter.getRadius(),
-						hiveIter.getx(), hiveIter.gety(), hiveIter.getRadius())) {
-					antsIter.setNanosSinceHive(0);
+				Hive hive = hiveIter.getObject();
+				if (ant.collides(hive)) {
+					ant.dropFood(hive);
+					ant.setHivePheroDrop(1);
+					break;
 				}
 				else {
-					antsIter.setNanosSinceHive(antsIter.getNanosSinceHive() + nanoSecDelta);
+					ant.scaleHivePheroDrop((float)Math.pow(0.90, nanoSecDelta / (double)1000000000));
 				}
 			}
-			//float hivePheroDrop = Math.max(0, 0.1f*(1-antsIter.getNanosSinceHive()/1000000000 / 10f));
-			//hivePheromoneGrid.add(antsIter.getx(), antsIter.gety(), hivePheroDrop);
-			float hivePheroDrop = Math.max(0, (1-antsIter.getNanosSinceHive()/1000000000 / 10f));
-			hivePheromoneGrid.dropPheromones(antsIter.getx(), antsIter.gety(), hivePheroDrop);
+			
+			EntityIterator<FoodSource> foodIter = foodSources.iterator();
+			boolean foundFood = false;
+			while (foodIter.next()) {
+				FoodSource food = foodIter.getObject();
+				if (food.hasFood() && ant.collides(food)) {
+					foundFood = true;
+					if (!ant.hasFood()) {
+						ant.takeFood(food, 1);
+					}
+					break;
+				}
+			}
+			if (foundFood) {
+				ant.setFoodPheroDrop(1);
+			}
+			else {
+				ant.scaleFoodPheroDrop((float)Math.pow(0.90, nanoSecDelta / (double)1000000000));
+			}
+			
+			hivePheromoneGrid.dropPheromones(ant.getx(), ant.gety(), ant.getHivePheroDrop());
+			foodPheromoneGrid.dropPheromones(ant.getx(), ant.gety(), ant.getFoodPheroDrop());
 		}
 		hivePheromoneGrid.update(nanoSecDelta);
+		foodPheromoneGrid.update(nanoSecDelta);
 	}
 
 }

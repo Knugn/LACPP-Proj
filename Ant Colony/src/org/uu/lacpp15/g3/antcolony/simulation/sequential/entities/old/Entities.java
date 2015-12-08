@@ -1,4 +1,4 @@
-package org.uu.lacpp15.g3.antcolony.simulation.sequential;
+package org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.old;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -171,6 +171,11 @@ public class Entities implements IWEntities {
 		@Override
 		public float getRadius() {
 			return R[cur.getValue()];
+		}
+
+		@Override
+		public void setRadius(float r) {
+			R[cur.getValue()] = r;
 		}
 		
 	}

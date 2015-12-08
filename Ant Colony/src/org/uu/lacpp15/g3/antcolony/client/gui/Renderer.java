@@ -54,6 +54,7 @@ public class Renderer {
 		g.fillRect(0, 0, w, h);
 		
 		IRPheromoneGrid hivePheroGrid = simulation.getWorld().getHivePheromoneGrid();
+		IRPheromoneGrid foodPheroGrid = simulation.getWorld().getFoodPheromoneGrid();
 		final int resx = hivePheroGrid.getResolutionX();
 		final int resy = hivePheroGrid.getResolutionY();
 		//TODO: image can be reused over frames.
@@ -61,9 +62,14 @@ public class Renderer {
 		final int[] pixels = ((DataBufferInt)(hivePheroImage.getRaster().getDataBuffer())).getData();
 		for (int y=0; y < resy; y++) {
 			for (int x=0; x < resx; x++) {
-				final float gridValue = hivePheroGrid.getGridValue(x, y);
-				final int gridValueByte = (int)(gridValue*255);
-				pixels[y*resx+x] = ((0xFF-gridValueByte)<<8) | (gridValueByte << 16);
+				final float hiveGridValue = hivePheroGrid.getGridValue(x, y);
+				final int hiveGridValueByte = (int)(hiveGridValue*255);
+				final float foodGridValue = foodPheroGrid.getGridValue(x, y);
+				final int foodGridValueByte = (int)(foodGridValue*255);
+				pixels[y*resx+x] = 
+						((0xFF-(hiveGridValueByte+foodGridValueByte)/2)<<8) 
+						| (hiveGridValueByte << 16) 
+						| foodGridValueByte;
 			}
 		}
 		g.drawImage(hivePheroImage, 0, 0, w, h, 0, 0, resx, resy, null);
@@ -85,6 +91,18 @@ public class Renderer {
 				g.fillOval(x - r, y - r, r * 2, r * 2);
 			}
 		}
+
+		IRFoodSources foodSources = simulation.getWorld().getAllFoodSources();
+		if (foodSources != null) {
+			g.setColor(Color.white);
+			IREntityIterator foodIter = foodSources.iterator();
+			while (foodIter.next()) {
+				int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
+				int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
+				int r = (int) Math.ceil(foodIter.getRadius() / (xmax - xmin) * w);
+				g.fillOval(x - r, y - r, r * 2, r * 2);
+			}
+		}
 		
 		IRAnts ants = simulation.getWorld().getAllAnts();
 		if (ants != null) {
@@ -94,18 +112,6 @@ public class Renderer {
 				int x = toImageCoord(antsIter.getx(), xmin, xmax, w);
 				int y = toImageCoord(antsIter.gety(), ymin, ymax, h);
 				int r = (int) Math.ceil(antsIter.getRadius() / (xmax - xmin) * w);
-				g.fillOval(x - r, y - r, r * 2, r * 2);
-			}
-		}
-		
-		IRFoodSources foodSources = simulation.getWorld().getAllFoodSources();
-		if (foodSources != null) {
-			g.setColor(Color.white);
-			IREntityIterator foodIter = foodSources.iterator();
-			while (foodIter.next()) {
-				int x = toImageCoord(foodIter.getx(), xmin, xmax, w);
-				int y = toImageCoord(foodIter.gety(), ymin, ymax, h);
-				int r = (int) Math.ceil(foodIter.getRadius() / (xmax - xmin) * w);
 				g.fillOval(x - r, y - r, r * 2, r * 2);
 			}
 		}
