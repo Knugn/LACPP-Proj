@@ -16,7 +16,7 @@ public class ErlangSimulation implements ISimulation {
     private long nanoSecCounter;
     private SimpleErlangMap world;
 
-    int nAnts = 15000;
+    int nAnts = 500;
     OtpConnection connection = null;
 
     public ErlangSimulation() throws IOException, OtpAuthException, OtpErlangExit {

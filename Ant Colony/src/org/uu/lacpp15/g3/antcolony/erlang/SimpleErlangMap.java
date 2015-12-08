@@ -20,6 +20,7 @@ public class SimpleErlangMap implements IWorld {
     WorldBounds box;
     ErlangHives hives;
     private PheromoneGrid hivePheromoneGrid;
+    ErlangPheromone pheromone;
 
 
     public SimpleErlangMap(WorldBounds box, int n,int hiveX,int hiveY,int foodX,int foodY){
@@ -38,6 +39,7 @@ public class SimpleErlangMap implements IWorld {
         entryArray[0] = entry;
         food = new ErlangFood(entryArray);
         hivePheromoneGrid = new PheromoneGrid(box);
+        pheromone = new ErlangPheromone();
     }
 
     public void setAnt(double x, double y){
@@ -76,5 +78,10 @@ public class SimpleErlangMap implements IWorld {
     @Override
     public IRPheromoneGrid getHivePheromoneGrid() {
         return hivePheromoneGrid;
+    }
+
+    @Override
+    public IRPheromoneGrid getFoodPheromoneGrid() {
+        return pheromone;
     }
 }

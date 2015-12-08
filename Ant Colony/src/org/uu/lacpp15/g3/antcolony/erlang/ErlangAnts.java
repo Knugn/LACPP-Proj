@@ -29,7 +29,7 @@ public class ErlangAnts implements IRAnts  {
 
     @Override
     public int size() {
-        return 1;
+        return ants.length;
     }
 
 
@@ -39,9 +39,10 @@ public class ErlangAnts implements IRAnts  {
         return  new AntsIterator();
     }
 
-    public class AntsIterator extends AEntityIterator {
+    public class AntsIterator implements IREntityIterator {
 
         int	idx	= -1;
+        int radiues = 1;
 
         @Override
         public boolean next() {
@@ -60,19 +61,23 @@ public class ErlangAnts implements IRAnts  {
 
         @Override
         public float getRadius() {
-            return 3;
+            return radiues;
         }
-
-        @Override
-        public void setCoord(int n, int value) {
-
-        }
-
 
 
         @Override
         public long getId() {
             return index;
+        }
+
+        @Override
+        public int getx() {
+            return (int) ants[idx].getX();
+        }
+
+        @Override
+        public int gety() {
+            return (int) ants[idx].getY();
         }
 
     }
