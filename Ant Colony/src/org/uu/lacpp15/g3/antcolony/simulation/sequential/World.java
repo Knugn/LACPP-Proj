@@ -40,7 +40,8 @@ public class World implements IWorld {
 							bounds.xmin + rand.nextInt(w),
 							bounds.ymin + rand.nextInt(h),
 							antRadius*4,
-							nAnts*10));
+							nAnts*5));
+
 		}
 		
 		this.allEntities.addAll(ants);
