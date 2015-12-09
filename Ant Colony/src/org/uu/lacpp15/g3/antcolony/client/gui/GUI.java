@@ -20,6 +20,7 @@ public class GUI {
 	}
 	
 	public void render(ISimulation simulation) {
-		renderer.render(simulation);
+		if (renderer.isFrameComplete())
+			renderer.renderAsync(simulation);
 	}
 }
