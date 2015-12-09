@@ -3,13 +3,13 @@ package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 import org.uu.lacpp15.g3.antcolony.common.AABoxInt2;
 
 public class WorldBounds extends AABoxInt2 {
-
+	
 	public WorldBounds(int xmin, int xmax, int ymin, int ymax) {
 		super(xmin, xmax, ymin, ymax);
 	}
 	
 	public int getChunkIndex(int dim, int a, int res) {
-		switch(dim) {
+		switch (dim) {
 			case 0:
 				return getChunkIndexX(a, res);
 			case 1:
@@ -20,11 +20,11 @@ public class WorldBounds extends AABoxInt2 {
 	}
 	
 	public int getChunkIndexX(int x, int res) {
-		return (int)Math.round((x - xmin + 0.5) / (double)(xmax - xmin) * res);
+		return (int) ((long) res * (x - xmin) / (xmax - xmin));
 	}
 	
 	public int getChunkIndexY(int y, int res) {
-		return (int)Math.round((y - ymin + 0.5) / (double)(ymax - ymin) * res);
+		return (int) ((long) res * (y - ymin) / (ymax - ymin));
 	}
 	
 }
