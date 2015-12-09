@@ -39,6 +39,12 @@ public class FloatGrid {
 		}
 	}
 	
+	public void scaleAll(float s) {
+		for (int i = 0; i < grid.length; i++) {
+			grid[i] *= s;
+		}
+	}
+	
 	public void clampBelow(int x, int y, float min) {
 		final int idx = y*width+x;
 		if (grid[idx] < min)
