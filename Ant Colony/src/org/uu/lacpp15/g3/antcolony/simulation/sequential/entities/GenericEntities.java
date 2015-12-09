@@ -23,6 +23,10 @@ public class GenericEntities<T extends Entity> implements IWEntities {
 		return new EntityIterator<>(entities);
 	}
 	
+	public T get(int index) {
+		return entities.get(index);
+	}
+	
 	public void add(T e) {
 		if (e == null)
 			throw new IllegalArgumentException("e must not be null.");
