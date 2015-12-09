@@ -10,7 +10,7 @@ public class Simulation implements ISimulation {
 	private AntsAI ai;
 	
 	public Simulation() {
-		this(5000,10);
+		this(10000,10);
 	}
 	
 	public Simulation(int nAnts, int nFoodSources) {
@@ -30,10 +30,11 @@ public class Simulation implements ISimulation {
 	@Override
 	public void update(long nanoSecDelta) {
 		ai.update(nanoSecDelta);
-		updatePheromones(nanoSecDelta);
+		//updatePheromones(nanoSecDelta);
 		nanoSecCounter += nanoSecDelta;
 	}
 	
+	@Deprecated
 	private void updatePheromones(long nanoSecDelta) {
 		world.getHivePheromoneGrid().update(nanoSecDelta);
 		world.getFoodPheromoneGrid().update(nanoSecDelta);
