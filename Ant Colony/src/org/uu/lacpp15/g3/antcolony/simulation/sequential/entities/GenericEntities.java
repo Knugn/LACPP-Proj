@@ -20,7 +20,7 @@ public class GenericEntities<T extends Entity> implements IWEntities {
 
 	@Override
 	public EntityIterator<T> iterator() {
-		return new EntityIterator<>(entities.iterator());
+		return new EntityIterator<>(entities);
 	}
 	
 	public void add(T e) {

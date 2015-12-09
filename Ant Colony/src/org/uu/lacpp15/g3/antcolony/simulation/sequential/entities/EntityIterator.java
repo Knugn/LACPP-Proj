@@ -1,22 +1,23 @@
 package org.uu.lacpp15.g3.antcolony.simulation.sequential.entities;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.uu.lacpp15.g3.antcolony.simulation.entities.AEntityIterator;
 
 public class EntityIterator<T extends Entity> extends AEntityIterator {
 	
-	private Iterator<T>	iter;
-	private T			cur;
+	private ArrayList<T>	arr;
+	private int				idx	= 0;
+	private T				cur;
 	
-	public EntityIterator(Iterator<T> iter) {
-		this.iter = iter;
+	public EntityIterator(ArrayList<T> arr) {
+		this.arr = arr;
 	}
 	
 	@Override
 	public boolean next() {
-		if (iter != null && iter.hasNext()) {
-			cur = iter.next();
+		if (arr != null && idx < arr.size()) {
+			cur = arr.get(idx++);
 			return true;
 		}
 		return false;
