@@ -87,6 +87,11 @@ public class Entity {
 		setRadius(r);
 	}
 	
+	public void move(int dx, int dy) {
+		x += dx;
+		y += dy;
+	}
+	
 	public void clamp(WorldBounds bounds) {
 		if (x < bounds.xmin)
 			x = bounds.xmin;
