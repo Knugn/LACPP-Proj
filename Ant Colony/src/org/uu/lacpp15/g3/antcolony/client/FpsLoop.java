@@ -16,6 +16,7 @@ public class FpsLoop {
 	private static final long	NANOS_PER_SECOND	= 1000000000;
 	
 	private final float			fpsTarget;
+	private double				maxFpsDrift = 0.10;
 	private boolean				stop;
 	private long				fpsReportCounter;
 	private int					frameCounter;
@@ -71,8 +72,9 @@ public class FpsLoop {
 				fpsReportCounter -= NANOS_PER_SECOND;
 				frameCounter = 0;
 			}
-			if (nanoSecDelta > desiredFrameNanos)
-				nanoSecDelta = desiredFrameNanos;
+			long maxDesiredFrameNanos = (long)(desiredFrameNanos*(1+maxFpsDrift));
+			if (nanoSecDelta > maxDesiredFrameNanos)
+				nanoSecDelta = maxDesiredFrameNanos;
 			for (FrameUpdater fu : frameUpdaters)
 				fu.update(nanoSecDelta);
 			
