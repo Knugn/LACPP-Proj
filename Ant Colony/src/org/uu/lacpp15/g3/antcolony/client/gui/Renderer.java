@@ -58,6 +58,7 @@ public class Renderer {
 	
 	private Canvas			canvas;
 	private BufferedImage	bgImage;
+	private EntityBatch		hiveBatch, foodBatch, antBatch;
 	private ExecutorService drawExecutor;
 	private Future<?> frameCompletion;
 	
@@ -123,14 +124,26 @@ public class Renderer {
 		
 		IRAABoxInt2 bounds = simulation.getWorld().getBounds();
 		IREntities hives = simulation.getWorld().getAllHives();
-		if (hives != null)
-			drawCalls.addEntityBatch(new EntityBatch(Color.orange, EntityBatch.Shape.Circle, bounds, hives));
+		if (hives != null) {
+			if (hiveBatch == null)
+				hiveBatch = new EntityBatch(Color.orange, EntityBatch.Shape.Circle);
+			hiveBatch.set(bounds, hives);
+			drawCalls.addEntityBatch(hiveBatch);
+		}
 		IREntities food = simulation.getWorld().getAllFoodSources();
-		if (food != null)
-			drawCalls.addEntityBatch(new EntityBatch(Color.white, EntityBatch.Shape.Circle, bounds, food));
+		if (food != null) {
+			if (foodBatch == null)
+				foodBatch = new EntityBatch(Color.white, EntityBatch.Shape.Circle);
+			foodBatch.set(bounds,food);
+			drawCalls.addEntityBatch(foodBatch);
+		}
 		IREntities ants = simulation.getWorld().getAllAnts();
-		if (ants != null)
-			drawCalls.addEntityBatch(new EntityBatch(Color.black, EntityBatch.Shape.Rect, bounds, ants));
+		if (ants != null) {
+			if (antBatch == null)
+				antBatch = new EntityBatch(Color.black, EntityBatch.Shape.Rect);
+			antBatch.set(bounds, ants);
+			drawCalls.addEntityBatch(antBatch);
+		}
 		
 		return drawCalls;
 	}
