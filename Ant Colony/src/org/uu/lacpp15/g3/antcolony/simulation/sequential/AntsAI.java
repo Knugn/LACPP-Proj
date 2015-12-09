@@ -6,7 +6,9 @@ import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ant;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ants;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.EntityIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSource;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.FoodSources;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hive;
+import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Hives;
 
 public class AntsAI {
 	
@@ -40,9 +42,12 @@ public class AntsAI {
 		while (antsIter.next()) {
 			Ant ant = antsIter.getObject();
 			
-			EntityIterator<FoodSource> foodIter = world.getAllFoodSources().iterator();
-			while (foodIter.next()) {
-				FoodSource food = foodIter.getObject();
+			//EntityIterator<FoodSource> foodIter = world.getAllFoodSources().iterator();
+			//while (foodIter.next()) {
+			//	FoodSource food = foodIter.getObject();
+			FoodSources foodSources = world.getAllFoodSources();
+			for (int i=0; i<foodSources.size(); i++) {
+				FoodSource food = foodSources.get(i);
 				if (food.hasFood() && ant.collides(food)) {
 					ant.setFoodPheroDrop(1);
 					if (!ant.hasFood()) {
@@ -54,9 +59,12 @@ public class AntsAI {
 				}
 			}
 			
-			EntityIterator<Hive> hiveIter = world.getAllHives().iterator();
-			while (hiveIter.next()) {
-				Hive hive = hiveIter.getObject();
+			//EntityIterator<Hive> hiveIter = world.getAllHives().iterator();
+			//while (hiveIter.next()) {
+			//	Hive hive = hiveIter.getObject();
+			Hives hives = world.getAllHives();
+			for (int i=0; i<hives.size(); i++) {
+				Hive hive = hives.get(i);
 				if (ant.collides(hive)) {
 					ant.dropFood(hive);
 					ant.setHivePheroDrop(1);
