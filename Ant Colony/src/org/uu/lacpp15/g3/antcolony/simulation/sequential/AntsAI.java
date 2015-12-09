@@ -35,91 +35,101 @@ public class AntsAI {
 		final double secDelta = nanoSecDelta / 1000000000.0;
 		
 		Ants ants = world.getAllAnts();
-		double frameMaxDelta = ants.getMaxSpeed() * secDelta;
 		EntityIterator<Ant> antsIter = ants.iterator();
 		int idx = 0;
 		while (antsIter.next()) {
 			Ant ant = antsIter.getObject();
 			
-			final int x = antsIter.getx();
-			final int y = antsIter.gety();
-			
 			EntityIterator<FoodSource> foodIter = world.getAllFoodSources().iterator();
-			boolean pickedFood = false;
 			while (foodIter.next()) {
 				FoodSource food = foodIter.getObject();
 				if (food.hasFood() && ant.collides(food)) {
 					ant.setFoodPheroDrop(1);
 					if (!ant.hasFood()) {
 						ant.takeFood(food, 1);
-						pickedFood = true;
+						prevXY[0][idx] = ant.getx();
+						prevXY[1][idx] = ant.gety();
 					}
 					break;
 				}
 			}
-			if (!pickedFood) {
-				ant.scaleFoodPheroDrop((float) Math.pow(0.90, secDelta));
-				
-				EntityIterator<Hive> hiveIter = world.getAllHives().iterator();
-				while (hiveIter.next()) {
-					Hive hive = hiveIter.getObject();
-					if (ant.collides(hive)) {
-						ant.dropFood(hive);
-						ant.setHivePheroDrop(1);
-						break;
-					}
-					else {
-						ant.scaleHivePheroDrop((float) Math.pow(0.90, secDelta));
-					}
+			
+			EntityIterator<Hive> hiveIter = world.getAllHives().iterator();
+			while (hiveIter.next()) {
+				Hive hive = hiveIter.getObject();
+				if (ant.collides(hive)) {
+					ant.dropFood(hive);
+					ant.setHivePheroDrop(1);
+					break;
 				}
-				
-				final int pdx = x - prevXY[0][idx];
-				final int pdy = y - prevXY[1][idx];
-				double ndx, ndy;
-				if (pdx == 0 && pdy == 0) {
-					double a = random.nextDouble() * 2 * Math.PI;
-					ndx = Math.cos(a);
-					ndy = Math.sin(a);
-				}
-				else {
-					final double r = random.nextGaussian() / 10;
-					ndx = pdx - pdy * r;
-					ndy = pdy + pdx * r;
-					double mag = Math.sqrt(ndx * ndx + ndy * ndy);
-					ndx /= mag;
-					ndy /= mag;
-				}
-				if (random.nextDouble() < 0.95) {
-					PheromoneGrid pheroGrid = null;
-					if (ant.hasFood())
-						pheroGrid = world.getHivePheromoneGrid();
-					else
-						pheroGrid = world.getFoodPheromoneGrid();
-					int xIdx = world.getBounds().getChunkIndexX(ant.getx(), pheroGrid.getResolutionX());
-					int yIdx = world.getBounds().getChunkIndexY(ant.gety(), pheroGrid.getResolutionY());
-					double gradx = pheroGrid.getGridGradientX(xIdx, yIdx);
-					double grady = pheroGrid.getGridGradientY(xIdx, yIdx);
-					double gradMag = Math.sqrt(gradx * gradx + grady * grady);
-					if (gradMag > 0.1) {
-						gradx *= 0.10 / gradMag;
-						grady *= 0.10 / gradMag;
-						ndx += gradx;
-						ndy += grady;
-					}
-				}
-				double f = frameMaxDelta / Math.sqrt(ndx * ndx + ndy * ndy);
-				ndx *= f;
-				ndy *= f;
-				antsIter.setx(x + (int) ndx);
-				antsIter.sety(y + (int) ndy);
 			}
-			prevXY[0][idx] = x;
-			prevXY[1][idx] = y;
 			
 			world.getHivePheromoneGrid().dropPheromones(ant.getx(), ant.gety(), ant.getHivePheroDrop());
 			world.getFoodPheromoneGrid().dropPheromones(ant.getx(), ant.gety(), ant.getFoodPheroDrop());
 			
+			ant.scaleFoodPheroDrop((float) Math.pow(0.90, secDelta));
+			ant.scaleHivePheroDrop((float) Math.pow(0.90, secDelta));
+			
 			idx++;
 		}
+		moveAllAnts(secDelta);
+	}
+	
+	private void moveAllAnts(double secDelta) {
+		Ants ants = world.getAllAnts();
+		final double frameMaxDelta = ants.getMaxSpeed() * secDelta;
+		EntityIterator<Ant> antsIter = ants.iterator();
+		int idx = 0;
+		while (antsIter.next()) {
+			Ant ant = antsIter.getObject();
+			final int x = ant.getx();
+			final int y = ant.gety();
+			final int pdx = x - prevXY[0][idx];
+			final int pdy = y - prevXY[1][idx];
+			move(frameMaxDelta, ant, pdx, pdy);
+			prevXY[0][idx] = x;
+			prevXY[1][idx] = y;
+			idx++;
+		}
+	}
+	
+	private void move(double frameMaxDelta, Ant ant, final int pdx, final int pdy) {
+		double ndx, ndy;
+		if (pdx == 0 && pdy == 0) {
+			double a = random.nextDouble() * 2 * Math.PI;
+			ndx = Math.cos(a);
+			ndy = Math.sin(a);
+		}
+		else {
+			final double r = random.nextGaussian() / 10;
+			ndx = pdx - pdy * r;
+			ndy = pdy + pdx * r;
+			double mag = Math.sqrt(ndx * ndx + ndy * ndy);
+			ndx /= mag;
+			ndy /= mag;
+		}
+		if (random.nextDouble() < 0.95) {
+			PheromoneGrid pheroGrid = null;
+			if (ant.hasFood())
+				pheroGrid = world.getHivePheromoneGrid();
+			else
+				pheroGrid = world.getFoodPheromoneGrid();
+			int xIdx = world.getBounds().getChunkIndexX(ant.getx(), pheroGrid.getResolutionX());
+			int yIdx = world.getBounds().getChunkIndexY(ant.gety(), pheroGrid.getResolutionY());
+			double gradx = pheroGrid.getGridGradientX(xIdx, yIdx);
+			double grady = pheroGrid.getGridGradientY(xIdx, yIdx);
+			double gradMag = Math.sqrt(gradx * gradx + grady * grady);
+			if (gradMag > 0.1) {
+				gradx *= 0.10 / gradMag;
+				grady *= 0.10 / gradMag;
+				ndx += gradx;
+				ndy += grady;
+			}
+		}
+		double f = frameMaxDelta / Math.sqrt(ndx * ndx + ndy * ndy);
+		ndx *= f;
+		ndy *= f;
+		ant.move((int) ndx, (int) ndy);
+		ant.clamp(world.getBounds());
 	}
 }
