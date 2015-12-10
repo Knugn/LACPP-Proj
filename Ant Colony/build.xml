@@ -10,7 +10,7 @@
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="Jinterface-1.6.userclasspath">
-        <pathelement location="../../../../../Program Files/erl7.1/lib/jinterface-1.6/priv/OtpErlang.jar"/>
+        <pathelement location="../../../../../Ant Colony/lib/jinterface-1.6/priv/OtpErlang.jar"/>
     </path>
     <path id="Ant Colony.classpath">
         <pathelement location="bin"/>
