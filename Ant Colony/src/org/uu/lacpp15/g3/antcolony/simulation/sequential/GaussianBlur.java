@@ -26,30 +26,4 @@ public class GaussianBlur {
 		}
 	}
 	
-	public static void main(String[] args) {
-		final int N = 512; 
-		FloatGrid src = new FloatGrid(N,N);
-		FloatGrid dst = new FloatGrid(N,N);
-		src.setAll(1);
-		//src.set(2,2,5);
-		//System.out.println(src);
-		long t1 = System.nanoTime();
-		GaussianBlur gb = new GaussianBlur();
-		for (int i=0; i < 6000; i++) {
-			gb.blur(src, dst, 1, 1);
-			//System.out.println();
-			//System.out.println(dst);
-			src.setAll(0);
-			FloatGrid temp = src;
-			src = dst;
-			dst = temp;
-		}
-		long t2 = System.nanoTime();
-		System.out.println((t2-t1)/1000000 + "ms");
-		
-		/*
-		gb.blur(dst, src, 1, 1);
-		System.out.println();
-		System.out.println(src);*/
-	}
 }
