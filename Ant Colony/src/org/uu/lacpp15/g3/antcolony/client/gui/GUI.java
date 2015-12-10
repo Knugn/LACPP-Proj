@@ -1,5 +1,7 @@
 package org.uu.lacpp15.g3.antcolony.client.gui;
 
+import java.awt.GridBagConstraints;
+
 import org.uu.lacpp15.g3.antcolony.simulation.ISimulation;
 
 public class GUI {
@@ -13,7 +15,7 @@ public class GUI {
 		inputHandler = new InputHandler();
 		window.addKeyListener(inputHandler);
 		renderer = new Renderer();
-		window.add(renderer.getCanvas());
+		window.add(renderer.getCanvas(), createCanvasConstrains());
 		window.setIgnoreRepaint(true);
 		window.pack();
 		window.setVisible(true);
@@ -22,5 +24,13 @@ public class GUI {
 	public void render(ISimulation simulation) {
 		if (renderer.isFrameComplete())
 			renderer.renderAsync(simulation);
+	}
+	
+	private static GridBagConstraints createCanvasConstrains() {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		return gbc;
 	}
 }

@@ -26,9 +26,9 @@ public class Renderer {
 	
 	private class DrawCalls implements Runnable {
 		
-		private BufferStrategy	bs;
-		private int imgw,imgh;
-		private List<EntityBatch> entityBatches;
+		private BufferStrategy		bs;
+		private int					imgw, imgh;
+		private List<EntityBatch>	entityBatches;
 		
 		public DrawCalls(BufferStrategy bs, int imgw, int imgh) {
 			this.bs = bs;
@@ -44,14 +44,22 @@ public class Renderer {
 		@Override
 		public void run() {
 			Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-			g.drawImage(bgImage,
-					0, 0, canvas.getWidth(), canvas.getHeight(),
-					0, 0, bgImage.getWidth(), bgImage.getHeight(),
-					null);
-			for (EntityBatch eb : entityBatches)
-				eb.draw(g, imgw, imgh);
-			g.dispose();
-			bs.show();
+			try {
+				g.drawImage(bgImage,
+						0, 0, canvas.getWidth(), canvas.getHeight(),
+						0, 0, bgImage.getWidth(), bgImage.getHeight(),
+						null);
+				for (EntityBatch eb : entityBatches)
+					eb.draw(g, imgw, imgh);
+			}
+			catch (Exception e) {
+				System.err.println("Drawing threw an exception.");
+				e.printStackTrace();
+			}
+			finally {
+				g.dispose();
+				bs.show();
+			}
 		}
 		
 	}
@@ -59,11 +67,12 @@ public class Renderer {
 	private Canvas			canvas;
 	private BufferedImage	bgImage;
 	private EntityBatch		hiveBatch, foodBatch, antBatch;
-	private ExecutorService drawExecutor;
-	private Future<?> frameCompletion;
+	private ExecutorService	drawExecutor;
+	private Future<?>		frameCompletion;
 	
 	public Renderer() {
-		canvas = new Canvas();
+		canvas = new SquareCanvas();
+		// canvas.setMinimumSize(new Dimension(256,256));
 		canvas.setPreferredSize(new Dimension(512, 512));
 	}
 	
@@ -74,21 +83,12 @@ public class Renderer {
 	public void render(ISimulation simulation) {
 		render(simulation, false);
 		/*
-		BufferStrategy bs = canvas.getBufferStrategy();
-		if (bs == null) {
-			canvas.createBufferStrategy(2);
-			return;
-		}
-		final int w = canvas.getWidth();
-		final int h = canvas.getHeight();
-		
-		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-		renderBackground(simulation, g, w, h);
-		renderEntities(simulation, g, w, h);
-		g.dispose();
-		
-		bs.show();
-		*/
+		 * BufferStrategy bs = canvas.getBufferStrategy(); if (bs == null) {
+		 * canvas.createBufferStrategy(2); return; } final int w = canvas.getWidth(); final int h =
+		 * canvas.getHeight(); Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+		 * renderBackground(simulation, g, w, h); renderEntities(simulation, g, w, h); g.dispose();
+		 * bs.show();
+		 */
 	}
 	
 	public void renderAsync(ISimulation simulation) {
@@ -119,7 +119,7 @@ public class Renderer {
 		final int w = canvas.getWidth();
 		final int h = canvas.getHeight();
 		
-		DrawCalls drawCalls = new DrawCalls(bs,w,h);
+		DrawCalls drawCalls = new DrawCalls(bs, w, h);
 		renderBackground(simulation, null, w, h);
 		
 		IRAABoxInt2 bounds = simulation.getWorld().getBounds();
@@ -134,7 +134,7 @@ public class Renderer {
 		if (food != null) {
 			if (foodBatch == null)
 				foodBatch = new EntityBatch(Color.white, EntityBatch.Shape.Circle);
-			foodBatch.set(bounds,food);
+			foodBatch.set(bounds, food);
 			drawCalls.addEntityBatch(foodBatch);
 		}
 		IREntities ants = simulation.getWorld().getAllAnts();
