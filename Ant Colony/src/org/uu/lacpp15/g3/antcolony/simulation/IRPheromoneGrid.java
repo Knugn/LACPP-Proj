@@ -1,7 +1,7 @@
 package org.uu.lacpp15.g3.antcolony.simulation;
 
 /**
- * Readable pheromone gird interface.
+ * Readable pheromone grid interface.
  * @author David
  *
  */
@@ -18,7 +18,7 @@ public interface IRPheromoneGrid {
 	 * Retrieve the value of the grid at the given grid coordinates.
 	 * @param x
 	 * @param y
-	 * @return the pheromone value at (x,y)
+	 * @return the pheromone value at grid coordinate(x,y).
 	 */
 	public float getGridValue(int x, int y);
 }

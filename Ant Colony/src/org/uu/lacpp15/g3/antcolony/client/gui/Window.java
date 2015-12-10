@@ -1,7 +1,6 @@
 package org.uu.lacpp15.g3.antcolony.client.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
