@@ -1,37 +1,41 @@
 package org.uu.lacpp15.g3.antcolony.erlang;
 
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntities;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
-import org.uu.lacpp15.g3.antcolony.simulation.entities.IRHives;
+import org.uu.lacpp15.g3.antcolony.simulation.entities.IRFoodSources;
 
 /**
  * Created by anders on 2015-12-04.
  */
-public class ErlangHives implements IRHives {
+public class ErlangFood implements IRFoodSources {
 
-    private ErlangHive[] hives;
+    private ErlangEntry[] entrys;
 
 
-    public ErlangHives(ErlangHive[] hives){
-        this.hives = hives;
+    public ErlangFood(ErlangEntry[] entrys){
+        this.entrys = entrys;
     }
+
 
     @Override
     public int size() {
-        return hives.length;
+        return entrys.length;
     }
 
     @Override
     public IREntityIterator iterator() {
-         return  new HivesIterator();
+        return new ErlangEntryIterator();
     }
 
-    public class HivesIterator implements IREntityIterator{
+
+
+    public class ErlangEntryIterator implements IREntityIterator{
 
         int index = -1;
 
         @Override
         public boolean next() {
-             return ++index < hives.length;
+            return ++index < entrys.length;
         }
 
         @Override
@@ -51,10 +55,10 @@ public class ErlangHives implements IRHives {
 
         @Override
         public int getCoord(int n) {
-            if (n == 0){
-                return hives[index].getxPos();
+            if(n==0){
+                return entrys[index].getX();
             }else {
-                return hives[index].getyPos();
+                return  entrys[index].getY();
             }
         }
 
@@ -63,4 +67,5 @@ public class ErlangHives implements IRHives {
             return 4;
         }
     }
+
 }

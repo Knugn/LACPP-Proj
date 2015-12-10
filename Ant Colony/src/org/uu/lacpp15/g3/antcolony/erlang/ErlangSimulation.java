@@ -22,9 +22,10 @@ public class ErlangSimulation implements ISimulation {
     public ErlangSimulation() throws IOException, OtpAuthException, OtpErlangExit {
         System.out.println("Simulation started ");
         int max = 200;
-        int hivePos = 200/2;
+        int hivePos = max/2;
         int nrActors = 100;
-        ErlangEntry[] food = ErlangEntry.getRandom(max,max,5);
+        int nrFoodEntrys = 1;
+        ErlangEntry[] food = ErlangEntry.getRandom(max,max,nrFoodEntrys);
         world = new SimpleErlangMap(new WorldBounds(0,max,0,max), nAnts,hivePos,hivePos, new ErlangFood(food));
 
         //Conect to server
