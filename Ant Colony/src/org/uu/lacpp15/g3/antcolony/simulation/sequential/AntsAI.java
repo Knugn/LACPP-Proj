@@ -3,6 +3,7 @@ package org.uu.lacpp15.g3.antcolony.simulation.sequential;
 import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ant;
 import org.uu.lacpp15.g3.antcolony.simulation.sequential.entities.Ants;
@@ -16,7 +17,7 @@ public class AntsAI {
 	
 	private World	world;
 	private int[][]	prevXY	= new int[2][];
-	private Random	random	= new Random();
+	//private Random	random	= new Random();
 	private ForkJoinPool forkJoinPool;
 	
 	public AntsAI(World world) {
@@ -125,6 +126,7 @@ public class AntsAI {
 	}
 	
 	private void move(double frameMaxDelta, Ant ant, final int pdx, final int pdy) {
+		Random random = ThreadLocalRandom.current();
 		double ndx, ndy;
 		if (pdx == 0 && pdy == 0) {
 			double a = random.nextDouble() * 2 * Math.PI;
