@@ -6,14 +6,11 @@ public class PheromoneGrid implements IRPheromoneGrid {
 	
 	private int				pad;
 	private int				X, Y;
-	private FloatGrid		curGrid;//, nextGrid;
-	//private long			nanosBetweenBlurs;
-	//private long			nanosSinceBlur;
-	//private GaussianBlur	gb	= new GaussianBlur();
+	private FloatGrid		curGrid;
 	private WorldBounds		worldBounds;
 	
 	public PheromoneGrid(WorldBounds worldBounds) {
-		this(128-6, 128-6, 3, 60);
+		this(128, 128, 1, 60);
 		setWorldBounds(worldBounds);
 	}
 	
@@ -22,9 +19,6 @@ public class PheromoneGrid implements IRPheromoneGrid {
 		this.X = resx + pad * 2;
 		this.Y = resy + pad * 2;
 		this.curGrid = new FloatGrid(X, Y);
-		//this.nextGrid = new FloatGrid(X, Y);
-		//this.nanosBetweenBlurs = 1000000000 / blurFreq;
-		//nanosSinceBlur = -nanosBetweenBlurs;
 	}
 	
 	public WorldBounds getWorldBounds() {
@@ -72,39 +66,8 @@ public class PheromoneGrid implements IRPheromoneGrid {
 		curGrid.clampBelow(xIdx + pad, yIdx + pad, strength);
 	}
 	
-	/*
-	@Deprecated
-	public void add(int x, int y, float amount) {
-		final int xIdx = worldBounds.getChunkIndexX(x, getResolutionX());
-		final int yIdx = worldBounds.getChunkIndexY(y, getResolutionY());
-		nextGrid.add(xIdx + pad, yIdx + pad, amount);
-	}
-	*/
 	public void scalePheromones(float scale) {
 		curGrid.scaleAll(scale);
 	}
 	
-	@Deprecated
-	public void update(long nanoSecDelta) {
-		double secDelta = nanoSecDelta / 1000000000.0;
-		float scale = (float)Math.pow(0.93, secDelta);
-		scalePheromones(scale);
-		/*
-		nanosSinceBlur += nanoSecDelta;
-		while (nanosSinceBlur >= 0) {
-			blur();
-			nanosSinceBlur -= nanosBetweenBlurs;
-		}*/
-	}
-	/*
-	@Deprecated
-	private void blur() {
-		gb.blur(curGrid, nextGrid);
-		nextGrid.clampAllFromAbove(1);
-		FloatGrid temp = curGrid;
-		curGrid = nextGrid;
-		nextGrid = temp;
-		nextGrid.setAll(0);
-	}
-	*/
 }

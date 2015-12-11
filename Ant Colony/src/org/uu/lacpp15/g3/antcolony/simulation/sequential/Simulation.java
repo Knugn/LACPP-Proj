@@ -30,14 +30,7 @@ public class Simulation implements ISimulation {
 	@Override
 	public void update(long nanoSecDelta) {
 		ai.update(nanoSecDelta);
-		//updatePheromones(nanoSecDelta);
 		nanoSecCounter += nanoSecDelta;
-	}
-	
-	@Deprecated
-	private void updatePheromones(long nanoSecDelta) {
-		world.getHivePheromoneGrid().update(nanoSecDelta);
-		world.getFoodPheromoneGrid().update(nanoSecDelta);
 	}
 
 	@Override
