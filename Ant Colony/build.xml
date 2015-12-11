@@ -5,11 +5,13 @@
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. --><project basedir="." default="build" name="Ant Colony">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="D:/Saves/eclipse/"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Program Files/eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
-    <path id="Jinterface-1.6.userclasspath"/>
+    <path id="Jinterface-1.6.userclasspath">
+        <pathelement location="../../../../../Ant Colony/lib/jinterface-1.6/priv/OtpErlang.jar"/>
+    </path>
     <path id="Ant Colony.classpath">
         <pathelement location="bin"/>
         <path refid="Jinterface-1.6.userclasspath"/>
@@ -49,9 +51,19 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="Main">
+    <target name="AntSimulation">
         <java classname="org.uu.lacpp15.g3.antcolony.Main" failonerror="true" fork="yes">
-            <jvmarg line="-Xms1000m -Xmx4000m"/>
+            <classpath refid="Ant Colony.classpath"/>
+        </java>
+    </target>
+    <target name="ErlangMain">
+        <java classname="org.uu.lacpp15.g3.antcolony.erlang.ErlangMain" failonerror="true" fork="yes">
+            <classpath refid="Ant Colony.classpath"/>
+        </java>
+    </target>
+    <target name="JavaBenchmark">
+        <java classname="org.uu.lacpp15.g3.antcolony.benchmark.JavaBenchmark" failonerror="true" fork="yes">
+            <arg line="nants=25000 nfood=1 reportinterval=60"/>
             <classpath refid="Ant Colony.classpath"/>
         </java>
     </target>
