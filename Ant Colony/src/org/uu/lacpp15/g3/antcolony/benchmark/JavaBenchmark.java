@@ -11,7 +11,7 @@ public class JavaBenchmark {
 		long nanoSecDelta = 1000000000 / 60;
 		// long maxNanosRunning = (long)1000000000*60*10;
 		long reportInterval = (long) 1000000000 * 10;
-		int nAnts = 10000, nFood = 1;
+		int nAnts = 25000, nFood = 1;
 		for (int i = 0; i < args.length; i++) {
 			String[] splitArg = args[i].split("=");
 			if (splitArg.length == 2) {
