@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class ErlangMain {
 
-    public static void main(String[] args) throws OtpErlangExit, IOException, OtpAuthException {
+    /*public static void main(String[] args) throws OtpErlangExit, IOException, OtpAuthException {
         Client client = new Client(new ErlangSimulation());
         try {
             client.run();
@@ -22,5 +22,5 @@ public class ErlangMain {
         }
 
 
-    }
+    }*/
 }
