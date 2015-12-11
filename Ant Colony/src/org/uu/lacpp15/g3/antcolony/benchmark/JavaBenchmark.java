@@ -12,7 +12,7 @@ public class JavaBenchmark {
 		// long maxNanosRunning = (long)1000000000*60*10;
 		long reportInterval = (long) 1000000000 * 10;
 		int nAnts = 10000, nFood = 10;
-		for (int i = 1; i < args.length; i++) {
+		for (int i = 0; i < args.length; i++) {
 			String[] splitArg = args[i].split("=");
 			if (splitArg.length == 2) {
 				String val = splitArg[1];
