@@ -1,6 +1,5 @@
 package org.uu.lacpp15.g3.antcolony.erlang;
 
-import org.uu.lacpp15.g3.antcolony.simulation.entities.AEntityIterator;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IRAnts;
 import org.uu.lacpp15.g3.antcolony.simulation.entities.IREntityIterator;
 
